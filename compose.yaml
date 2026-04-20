@@ -1,0 +1,15 @@
+services:
+  postgres-db:
+    container_name: pao
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: pao_dev
+      POSTGRES_PASSWORD: pao_dev10
+      POSTGRES_DB: pao
+      POSTGRES_HOST_AUTH_METHOD: password
+    ports:
+      - "5434:5432"
+volumes:
+  postgresql_data:
+    driver: local
