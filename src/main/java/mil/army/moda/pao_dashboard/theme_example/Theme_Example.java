@@ -7,7 +7,7 @@ import mil.army.moda.pao_dashboard.theme.Theme;
 @Entity
 public class Theme_Example {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String description;
