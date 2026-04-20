@@ -1,11 +1,10 @@
 package mil.army.moda.pao_dashboard.theme_example;
 
 import jakarta.persistence.*;
-import mil.army.moda.pao_dashboard.event_type.Event_Type;
 import mil.army.moda.pao_dashboard.theme.Theme;
 
 @Entity
-public class Theme_Example {
+public class ThemeExample {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -17,16 +16,16 @@ public class Theme_Example {
 
 
 
-    public Theme_Example() {
+    public ThemeExample() {
     }
 
 
-    public Theme_Example(String name, String description) {
+    public ThemeExample(String name, String description) {
         this.name = name;
         this.description = description;
     }
 
-    public Theme_Example(String name, String description, Theme theme) {
+    public ThemeExample(String name, String description, Theme theme) {
         this.name = name;
         this.description = description;
         this.theme = theme;

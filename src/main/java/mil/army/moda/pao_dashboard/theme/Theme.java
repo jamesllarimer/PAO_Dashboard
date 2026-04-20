@@ -1,7 +1,6 @@
 package mil.army.moda.pao_dashboard.theme;
 import jakarta.persistence.*;
-import mil.army.moda.pao_dashboard.theme_example.Theme_Example;
-import mil.army.moda.pao_dashboard.unit.Unit;
+import mil.army.moda.pao_dashboard.theme_example.ThemeExample;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +12,7 @@ public class Theme {
     private Long id;
     private String name;
     @OneToMany(mappedBy = "id")
-    private List<Theme_Example> theme_examples = new ArrayList<>() ;
+    private List<ThemeExample> theme_examples = new ArrayList<>() ;
 
     public Theme() {
     }
@@ -22,7 +21,7 @@ public class Theme {
         this.name = name;
     }
 
-    public Theme(String name, List<Theme_Example> theme_examples) {
+    public Theme(String name, List<ThemeExample> theme_examples) {
         this.name = name;
         this.theme_examples = theme_examples;
     }
@@ -39,11 +38,11 @@ public class Theme {
         this.name = name;
     }
 
-    public List<Theme_Example> getTheme_examples() {
+    public List<ThemeExample> getTheme_examples() {
         return theme_examples;
     }
 
-    public void setTheme_examples(List<Theme_Example> theme_examples) {
+    public void setTheme_examples(List<ThemeExample> theme_examples) {
         this.theme_examples = theme_examples;
     }
 }
