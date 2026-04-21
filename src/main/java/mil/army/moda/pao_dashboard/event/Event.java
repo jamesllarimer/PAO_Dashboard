@@ -1,11 +1,8 @@
 package mil.army.moda.pao_dashboard.event;
 
 import jakarta.persistence.*;
-import mil.army.moda.pao_dashboard.event_type.Event_Type;
-import mil.army.moda.pao_dashboard.rank.Rank;
-import mil.army.moda.pao_dashboard.user.User_Profile;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import mil.army.moda.pao_dashboard.event_type.EventType;
+import mil.army.moda.pao_dashboard.user.UserProfile;
 
 import java.util.Date;
 
@@ -18,17 +15,17 @@ public class Event {
     private String description;
     @ManyToOne()
     @JoinColumn(name = "event_type_id")
-    private Event_Type event_type;
+    private EventType event_type;
     private Date start_date;
     private Date end_date;
     @ManyToOne()
     @JoinColumn(name = "user_id")
-    private User_Profile lead;
+    private UserProfile lead;
 
     public Event() {
     }
 
-    public Event(Long id, String name, String description, Event_Type event_type, Date start_date, Date end_date, User_Profile lead) {
+    public Event(Long id, String name, String description, EventType event_type, Date start_date, Date end_date, UserProfile lead) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -62,11 +59,11 @@ public class Event {
         this.description = description;
     }
 
-    public Event_Type getEvent_type() {
+    public EventType getEvent_type() {
         return event_type;
     }
 
-    public void setEvent_type(Event_Type event_type) {
+    public void setEvent_type(EventType event_type) {
         this.event_type = event_type;
     }
 
@@ -86,11 +83,11 @@ public class Event {
         this.end_date = end_date;
     }
 
-    public User_Profile getLead() {
+    public UserProfile getLead() {
         return lead;
     }
 
-    public void setLead(User_Profile lead) {
+    public void setLead(UserProfile lead) {
         this.lead = lead;
     }
 }

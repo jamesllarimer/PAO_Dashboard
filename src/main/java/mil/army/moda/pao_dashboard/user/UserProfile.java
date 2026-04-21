@@ -5,7 +5,8 @@ import mil.army.moda.pao_dashboard.rank.Rank;
 import mil.army.moda.pao_dashboard.unit.Unit;
 
 @Entity
-public class User_Profile {
+@Table(name = "user_profile")
+public class UserProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,10 +30,10 @@ public class User_Profile {
     @JoinColumn(name = "rank_id")
     private Rank rank;
 
-    public User_Profile() {
+    public UserProfile() {
     }
 
-    public User_Profile(String username, String firstName, String lastName, Unit unit, Rank rank) {
+    public UserProfile(String username, String firstName, String lastName, Unit unit, Rank rank) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;

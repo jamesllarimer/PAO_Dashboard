@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import mil.army.moda.pao_dashboard.theme.Theme;
 
 @Entity
+@Table(name = "theme_example")
 public class ThemeExample {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

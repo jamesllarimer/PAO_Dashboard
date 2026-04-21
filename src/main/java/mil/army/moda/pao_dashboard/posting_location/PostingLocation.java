@@ -1,21 +1,19 @@
 package mil.army.moda.pao_dashboard.posting_location;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
-public class Posting_Location {
+@Table(name = "posting_location")
+public class PostingLocation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
 
-    public Posting_Location() {
+    public PostingLocation() {
     }
 
-    public Posting_Location(String name) {
+    public PostingLocation(String name) {
         this.name = name;
     }
 

@@ -1,26 +1,20 @@
-package mil.army.moda.pao_dashboard.event_type;
+package mil.army.moda.pao_dashboard.event_status;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
-public class Event_Type {
+@Table(name = "event_status")
+public class EventStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String description;
 
-    public Event_Type() {
+    public EventStatus() {
     }
 
-    public Event_Type(String name) {
-        this.name = name;
-    }
-
-    public Event_Type(String name, String description) {
+    public EventStatus(String name, String description) {
         this.name = name;
         this.description = description;
     }
