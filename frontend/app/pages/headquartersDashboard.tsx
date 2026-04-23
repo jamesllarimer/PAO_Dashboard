@@ -11,9 +11,10 @@ export function meta({}: Route.MetaArgs) {
 
 
 export default function HeadquartersDashboard() {
-    const [coverageEvents ,setCoverageEvents] = useState<CoverageEvent[]>([]);
-    const [themes ,setThemes] = useState<Theme[]>([]);
-   async function getThemes(): Promise<void> {
+    const [coverageEvents, setCoverageEvents] = useState<CoverageEvent[]>([]);
+    const [themes, setThemes] = useState<Theme[]>([]);
+
+    async function getThemes(): Promise<void> {
         let url = "http://localhost:8080/api/v1/theme"
 
         try {
@@ -25,18 +26,21 @@ export default function HeadquartersDashboard() {
             console.error("Error fetching data:", error);
         }
     }
+
     useEffect(() => {
         getThemes();
     }, []);
     return (
-        <>
-            <h1 className={"text-3xl font-bold underline"}>This is the HQ dashboard</h1>
-            <select>
-            {themes.map((theme) => {
-              return  <option key={theme.id}>{theme.name}</option>
-                } )
-            }
+        <div>
+            <h1 className={"text-3xl font-bold dark:text-amber-50 text-gray-950"}>This is the HQ dashboard</h1>
+            <select
+                className="text-gray-950 dark:text-amber-50 p-2 border-2 border-gray-950 dark:border-green-700
+                focus:outline-none focus:border-gray-950 dark:focus:border-green-500 rounded-md bg-white dark:bg-gray-900">
+                {themes.map((theme) => {
+                    return <option key={theme.id}>{theme.name}</option>
+                })
+                }
             </select>
-        </>
+        </div>
     );
 }
