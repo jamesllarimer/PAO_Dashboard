@@ -1,5 +1,6 @@
 package mil.army.moda.pao_dashboard.event_type;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class EventTypeController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public EventType save(@RequestBody EventType eventType) {
         return eventTypeService.save(eventType);
     }

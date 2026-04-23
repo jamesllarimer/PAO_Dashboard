@@ -1,4 +1,4 @@
-import type {Route} from "./+types/homePage";
+import type {Route} from "./+types/dashboard";
 
 
 export function meta({}: Route.MetaArgs) {
@@ -8,10 +8,10 @@ export function meta({}: Route.MetaArgs) {
     ];
 }
 
-export default function Home() {
+export default function Dashboard() {
     return (
         <>
-           <h1>This is the home page</h1>
+            <h1>This is the dashboard</h1>
         </>
     );
 }
