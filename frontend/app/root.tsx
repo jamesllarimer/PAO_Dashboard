@@ -8,8 +8,9 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import './app.css'
 import NavBar from "~/components/NavBar";
+import { ThemeProvider } from './context/ThemeContext';
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -34,10 +35,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
+      <ThemeProvider>
       <NavBar/>
         {children}
         <ScrollRestoration />
         <Scripts />
+      </ThemeProvider>
       </body>
     </html>
   );

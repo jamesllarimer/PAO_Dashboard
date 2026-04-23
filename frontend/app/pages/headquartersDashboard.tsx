@@ -30,7 +30,7 @@ export default function HeadquartersDashboard() {
     }, []);
     return (
         <>
-            <h1>This is the HQ dashboard</h1>
+            <h1 className={"text-3xl font-bold underline"}>This is the HQ dashboard</h1>
             <select>
             {themes.map((theme) => {
               return  <option key={theme.id}>{theme.name}</option>
