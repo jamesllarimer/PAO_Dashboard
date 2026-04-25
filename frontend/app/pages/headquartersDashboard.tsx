@@ -1,8 +1,9 @@
 import type {Route} from "./+types/headquartersDashboard";
 import {useEffect, useEffectEvent, useState} from "react";
-import type {CoverageEvent, Theme} from "~/types";
-import {ThemeProvider} from "~/context/ThemeContext";
+import {useUserContext} from "~/context/UserProfileContext"
 import ThemeForm from "../components/ThemeForm";
+import type {User} from "~/types";
+import {list} from "isbot";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -14,13 +15,16 @@ export function meta({}: Route.MetaArgs) {
 
 export default function HeadquartersDashboard() {
     const [showThemeForm, setShowThemeForm] = useState(false);
+    const {users, setUsers} = useUserContext();
+    let usersList = users?.map((user: User) => {
+       return <li>{`${user.rank.abbreviation} ${user.firstName} ${user.lastName}`}</li>
+    });
     return (
         <div className={"grid grid-flow-col grid-rows-3 gap-1"}>
             <div className={"row-span-3 text-stone-50 border-2 border-white"}>
                 <ul>
                     <li><button className={"bg-green-700 p-2"} onClick={()=> setShowThemeForm(!showThemeForm)}>Themes</button></li>
-                    <li>Nav 2</li>
-                    <li>Nav 3</li>
+                    {usersList}
                 </ul>
             </div>
             <div className={"col-span-2 border-2 border-white"}>
