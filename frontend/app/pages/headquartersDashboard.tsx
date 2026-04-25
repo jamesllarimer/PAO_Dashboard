@@ -1,6 +1,8 @@
 import type {Route} from "./+types/headquartersDashboard";
 import {useEffect, useEffectEvent, useState} from "react";
 import type {CoverageEvent, Theme} from "~/types";
+import {ThemeProvider} from "~/context/ThemeContext";
+import ThemeForm from "../components/ThemeForm";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -11,36 +13,27 @@ export function meta({}: Route.MetaArgs) {
 
 
 export default function HeadquartersDashboard() {
-    const [coverageEvents, setCoverageEvents] = useState<CoverageEvent[]>([]);
-    const [themes, setThemes] = useState<Theme[]>([]);
-
-    async function getThemes(): Promise<void> {
-        let url = "http://localhost:8080/api/v1/theme"
-
-        try {
-            const response = await fetch(url);
-            const result = await response.json();
-            console.log(result);
-            setThemes(result);
-        } catch (error) {
-            console.error("Error fetching data:", error);
-        }
-    }
-
-    useEffect(() => {
-        getThemes();
-    }, []);
+    const [showThemeForm, setShowThemeForm] = useState(false);
     return (
-        <div>
-            <h1 className={"text-3xl font-bold dark:text-amber-50 text-gray-950"}>This is the HQ dashboard</h1>
-            <select
-                className="text-gray-950 dark:text-amber-50 p-2 border-2 border-gray-950 dark:border-green-700
-                focus:outline-none focus:border-gray-950 dark:focus:border-green-500 rounded-md bg-white dark:bg-gray-900">
-                {themes.map((theme) => {
-                    return <option key={theme.id}>{theme.name}</option>
-                })
+        <div className={"grid grid-flow-col grid-rows-3 gap-1"}>
+            <div className={"row-span-3 text-stone-50 border-2 border-white"}>
+                <ul>
+                    <li><button className={"bg-green-700 p-2"} onClick={()=> setShowThemeForm(!showThemeForm)}>Themes</button></li>
+                    <li>Nav 2</li>
+                    <li>Nav 3</li>
+                </ul>
+            </div>
+            <div className={"col-span-2 border-2 border-white"}>
+                <h1 className={"text-3xl font-bold dark:text-amber-50 text-gray-950 col-span-2"}>1st Armored Division</h1>
+                <span><button>Add theme</button></span>
+            </div>
+            <div className={"row-span-2 col-span-2 text-stone-50 border-2 border-white"}>
+                <h3>Dashboard section</h3>
+                {
+                   showThemeForm && <ThemeForm />
                 }
-            </select>
+            </div>
+
         </div>
     );
 }

@@ -1,4 +1,4 @@
-export interface CoverageEvent {
+export type CoverageEvent = {
     id: number;
     name: string;
     description: string;
@@ -8,7 +8,7 @@ export interface CoverageEvent {
     owner: string;
 }
 
-export interface Theme {
-    id: number;
+export type Theme = {
+    id: number | null;
     name: string;
 }
