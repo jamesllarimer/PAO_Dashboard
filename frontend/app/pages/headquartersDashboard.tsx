@@ -17,7 +17,7 @@ export default function HeadquartersDashboard() {
     const [showThemeForm, setShowThemeForm] = useState(false);
     const {users, setUsers} = useUserContext();
     let usersList = users?.map((user: User) => {
-       return <li>{`${user.rank.abbreviation} ${user.firstName} ${user.lastName}`}</li>
+       return <li>{`${user.rankAbbreviation} ${user.firstName} ${user.lastName}`}</li>
     });
     return (
         <div className={"grid grid-flow-col grid-rows-3 gap-1"}>

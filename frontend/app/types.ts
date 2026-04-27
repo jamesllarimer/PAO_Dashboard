@@ -28,6 +28,8 @@ export type User = {
     username: string;
     firstName: string;
     lastName: string;
-    rank: Rank;
-    unit: Unit;
+    role: string;
+    unitName: string;
+    rankAbbreviation: string;
 }
+

@@ -16,8 +16,8 @@ public class UserProfileController {
         this.userProfileService = userProfileService;
     }
     @GetMapping
-    public List<UserProfile> findAll() {
-        return userProfileService.GetAllUsers();
+    public List<UserProfileResponseDto> findAll() {
+        return userProfileService.findAll();
     }
 
     @GetMapping("/{id}")

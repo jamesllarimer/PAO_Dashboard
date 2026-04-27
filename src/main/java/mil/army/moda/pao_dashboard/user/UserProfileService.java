@@ -14,6 +14,19 @@ public class UserProfileService {
     public List<UserProfile> GetAllUsers(){
         return userRepository.findAll();
     }
+    public List<UserProfileResponseDto> findAll() {
+        return userRepository.findAll().stream()
+                .map(u -> new UserProfileResponseDto(
+                        u.getId(),
+                        u.getUsername(),
+                        u.getFirstName(),
+                        u.getLastName(),
+                        u.getRole().toString(),
+                        u.getUnit().getName(),
+                        u.getRank().getAbbreviation()
+                ))
+                .toList();
+    }
     public Optional<UserProfile> GetUserById(Long id){
         return userRepository.findById(id);
     }

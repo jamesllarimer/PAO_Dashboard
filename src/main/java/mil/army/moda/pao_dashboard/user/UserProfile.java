@@ -41,6 +41,16 @@ public class UserProfile {
         this.rank = rank;
     }
 
+    public UserProfile(Long id, String username, String firstName, String lastName, Role role, Unit unit, Rank rank) {
+        this.id = id;
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.role = role;
+        this.unit = unit;
+        this.rank = rank;
+    }
+
     public Long getId() {
         return id;
     }
@@ -83,5 +93,13 @@ public class UserProfile {
 
     public void setRank(Rank rank) {
         this.rank = rank;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
