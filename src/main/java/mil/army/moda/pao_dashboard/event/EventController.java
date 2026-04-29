@@ -8,6 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/events")
+@CrossOrigin("*")
 public class EventController {
 
     private final EventService eventService;
@@ -17,7 +18,7 @@ public class EventController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Event>> getAll() {
+    public ResponseEntity<List<EventResponseDto>> getAll() {
         return ResponseEntity.ok(eventService.findAll());
     }
 

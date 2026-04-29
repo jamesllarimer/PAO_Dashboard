@@ -14,8 +14,18 @@ public class EventService {
         this.eventRepository = eventRepository;
     }
 
-    public List<Event> findAll() {
-        return eventRepository.findAll();
+    public List<EventResponseDto> findAll() {
+        return eventRepository.findAll().stream()
+                .map(e -> new EventResponseDto(
+                        e.getId(),
+                        e.getName(),
+                        e.getDescription(),
+                        e.getEvent_type().getName(),
+                        e.getStart_date(),
+                        e.getEnd_date(),
+                        e.getLead().getRank().getAbbreviation() + " " + e.getLead().getLastName(),
+                        e.getLead().getUnit().getName()
+                )).toList();
     }
 
     public Event findById(Long id) {

@@ -1,12 +1,13 @@
-export type CoverageEvent = {
+export type EventResponseDto = {
     id: number;
     name: string;
     description: string;
-    endDate: Date;
-    startDate: Date;
     eventType: string;
-    owner: string;
-}
+    startDate: string;
+    endDate: string;
+    lead: string;
+    unit: string;
+};
 
 export type Theme = {
     id: number | null;
@@ -32,4 +33,5 @@ export type User = {
     unitName: string;
     rankAbbreviation: string;
 }
+
 
