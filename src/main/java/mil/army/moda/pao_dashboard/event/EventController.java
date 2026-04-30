@@ -28,7 +28,7 @@ public class EventController {
     }
 
     @PostMapping
-    public ResponseEntity<Event> create(@RequestBody Event event) {
+    public ResponseEntity<Event> create(@RequestBody EventRequest event) {
         return ResponseEntity.status(HttpStatus.CREATED).body(eventService.create(event));
     }
 

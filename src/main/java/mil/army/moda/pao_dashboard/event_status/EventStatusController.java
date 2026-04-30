@@ -7,6 +7,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/event_status")
+@CrossOrigin("*")
 public class EventStatusController {
     private final EventStatusService eventStatusService;
     public EventStatusController(EventStatusService eventStatusService) {

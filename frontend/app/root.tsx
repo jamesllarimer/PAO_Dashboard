@@ -12,6 +12,7 @@ import './app.css'
 import NavBar from "~/components/NavBar";
 import {ThemeProvider} from './context/ThemeContext';
 import {UserProvider} from './context/UserProfileContext'
+import Sidebar from "~/components/SideBar";
 
 export const links: Route.LinksFunction = () => [
     {rel: "preconnect", href: "https://fonts.googleapis.com"},
@@ -35,11 +36,22 @@ export function Layout({children}: { children: React.ReactNode }) {
             <Meta/>
             <Links/>
         </head>
-        <body className="bg-white dark:bg-gray-950">
+        <body style={{
+            backgroundColor: '#221F20',
+            color: '#FFFFFF',
+            margin: 0,
+            minHeight: '100vh',
+            fontFamily: 'Inter, sans-serif',
+        }}>
         <UserProvider>
             <ThemeProvider>
-                <NavBar/>
-                {children}
+                <div style={{display: 'flex', flexDirection: 'column', minHeight: '100vh'}}>
+                    <NavBar/>
+                    <div style={{display: 'flex', flex: 1}}>
+                        <Sidebar/>
+                        {children}
+                    </div>
+                </div>
                 <ScrollRestoration/>
                 <Scripts/>
             </ThemeProvider>
@@ -70,13 +82,19 @@ export function ErrorBoundary({error}: Route.ErrorBoundaryProps) {
     }
 
     return (
-        <main className="pt-16 p-4 container mx-auto">
-            <h1>{message}</h1>
-            <p>{details}</p>
+        <main style={{padding: '2rem'}}>
+            <h1 style={{color: '#FFCC01'}}>{message}</h1>
+            <p style={{color: '#FFFFFF'}}>{details}</p>
             {stack && (
-                <pre className="w-full p-4 overflow-x-auto">
-          <code>{stack}</code>
-        </pre>
+                <pre style={{
+                    background: '#2a2728',
+                    padding: '1rem',
+                    overflowX: 'auto',
+                    color: '#FFFFFF',
+                    borderRadius: '4px',
+                }}>
+                    <code>{stack}</code>
+                </pre>
             )}
         </main>
     );

@@ -7,6 +7,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/posting_locations")
+@CrossOrigin("*")
 public class PostingLocationsController {
     private final PostingLocationService postingLocationService;
     public PostingLocationsController(PostingLocationService postingLocationService) {

@@ -1,6 +1,14 @@
 package mil.army.moda.pao_dashboard.event;
 
 import jakarta.persistence.EntityNotFoundException;
+import mil.army.moda.pao_dashboard.event_status.EventStatus;
+import mil.army.moda.pao_dashboard.event_status.EventStatusRepository;
+import mil.army.moda.pao_dashboard.event_type.EventType;
+import mil.army.moda.pao_dashboard.event_type.EventTypeRepository;
+import mil.army.moda.pao_dashboard.user.UserProfile;
+import mil.army.moda.pao_dashboard.user.UserRepository;
+import org.apache.catalina.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,9 +17,15 @@ import java.util.List;
 public class EventService {
 
     private final EventRepository eventRepository;
+    private final EventStatusRepository eventStatusRepository;
+    private final UserRepository userRepository;
+    private final EventTypeRepository eventTypeRepository;
 
-    public EventService(EventRepository eventRepository) {
+    public EventService(EventRepository eventRepository, EventStatusRepository eventStatusRepository, UserRepository userRepository, EventTypeRepository eventTypeRepository) {
         this.eventRepository = eventRepository;
+        this.eventStatusRepository = eventStatusRepository;
+        this.userRepository = userRepository;
+        this.eventTypeRepository = eventTypeRepository;
     }
 
     public List<EventResponseDto> findAll() {
@@ -24,7 +38,8 @@ public class EventService {
                         e.getStart_date(),
                         e.getEnd_date(),
                         e.getLead().getRank().getAbbreviation() + " " + e.getLead().getLastName(),
-                        e.getLead().getUnit().getName()
+                        e.getLead().getUnit().getName(),
+                        e.getEventStatus().getName()
                 )).toList();
     }
 
@@ -33,7 +48,28 @@ public class EventService {
                 .orElseThrow(() -> new EntityNotFoundException("Event not found with id: " + id));
     }
 
-    public Event create(Event event) {
+    public Event create(EventRequest request) {
+        Event event = new Event();
+
+        event.setName(request.getName());
+        event.setDescription(request.getDescription());
+        event.setStart_date(request.getStartDate());
+        event.setEnd_date(request.getEndDate());
+
+        // Fetch related entities by ID
+        EventType eventType = eventTypeRepository.findById(request.getEventTypeId())
+                .orElseThrow(() -> new RuntimeException("Invalid event type"));
+
+        UserProfile lead = userRepository.findById(request.getLeadId())
+                .orElseThrow(() -> new RuntimeException("Invalid user"));
+
+        EventStatus status = eventStatusRepository.findById(request.getEventStatusId())
+                .orElseThrow(() -> new RuntimeException("Invalid status"));
+
+        event.setEvent_type(eventType);
+        event.setLead(lead);
+        event.setEventStatus(status);
+
         return eventRepository.save(event);
     }
 

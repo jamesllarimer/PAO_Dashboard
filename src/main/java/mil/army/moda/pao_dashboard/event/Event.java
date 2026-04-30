@@ -1,6 +1,7 @@
 package mil.army.moda.pao_dashboard.event;
 
 import jakarta.persistence.*;
+import mil.army.moda.pao_dashboard.event_status.EventStatus;
 import mil.army.moda.pao_dashboard.event_type.EventType;
 import mil.army.moda.pao_dashboard.user.UserProfile;
 
@@ -21,11 +22,14 @@ public class Event {
     @ManyToOne()
     @JoinColumn(name = "user_id")
     private UserProfile lead;
+    @ManyToOne()
+    @JoinColumn(name = "event_status_id")
+    private EventStatus eventStatus;
 
     public Event() {
     }
 
-    public Event(Long id, String name, String description, EventType event_type, Date start_date, Date end_date, UserProfile lead) {
+    public Event(Long id, String name, String description, EventType event_type, Date start_date, Date end_date, UserProfile lead, EventStatus eventStatus) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -33,6 +37,7 @@ public class Event {
         this.start_date = start_date;
         this.end_date = end_date;
         this.lead = lead;
+        this.eventStatus = eventStatus;
     }
 
     public Long getId() {
@@ -89,6 +94,14 @@ public class Event {
 
     public void setLead(UserProfile lead) {
         this.lead = lead;
+    }
+
+    public EventStatus getEventStatus() {
+        return eventStatus;
+    }
+
+    public void setEventStatus(EventStatus eventStatus) {
+        this.eventStatus = eventStatus;
     }
 }
 

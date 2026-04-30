@@ -8,6 +8,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/event_type")
+@CrossOrigin("*")
 public class EventTypeController {
     private final EventTypeService eventTypeService;
     public EventTypeController(EventTypeService eventTypeService) {

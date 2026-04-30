@@ -5,12 +5,16 @@ import type {User} from "~/types";
 interface UserContextType {
     users: User[] | undefined;
     setUsers: (value: User[]) => void;
+    activeUser: User | null | undefined;
+    setActiveUser: (value: User | null ) => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export function UserProvider({ children }: { children: ReactNode }) {
     const [users, setUsers] = useState<User[]>();
+    const [activeUser, setActiveUser] = useState<User | null>(null);
+
     async function getAllUsers(): Promise<User[] | any> {
         try {
             const url = 'http://localhost:8080/api/v1/user'
@@ -32,11 +36,14 @@ export function UserProvider({ children }: { children: ReactNode }) {
     }
     useEffect(() => {
         getAllUsers().then((users) => setUsers(users));
+        if (users) {
+            setActiveUser(users[0])
+        }
     }, []);
 
 
     return (
-        <UserContext.Provider value={{ users, setUsers}}>
+        <UserContext.Provider value={{ users, setUsers, activeUser, setActiveUser}}>
             {children}
         </UserContext.Provider>
     );

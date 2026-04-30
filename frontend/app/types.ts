@@ -7,6 +7,7 @@ export type EventResponseDto = {
     endDate: string;
     lead: string;
     unit: string;
+    status: string;
 };
 
 export type Theme = {
@@ -33,5 +34,50 @@ export type User = {
     unitName: string;
     rankAbbreviation: string;
 }
+
+export type Event = {
+    id: number;
+    name: string;
+    description: string;
+    event_type: EventType;
+    start_date: string; // ISO 8601 date string from Java Date serialization
+    end_date: string;
+    lead: UserProfile;
+    eventStatus: EventStatus;
+}
+
+export type EventType = {
+    id: number;
+    name: string;
+}
+
+export type EventStatus = {
+    id: number;
+    name: string;
+}
+
+export type UserProfile = {
+    id: number;
+    rankAbbreviation: string;
+    lastName: string;
+    role: string;
+}
+
+export type PostingLocation = {
+    id: number;
+    name: string;
+}
+
+export type EventRequest = {
+    name: string;
+    description: string;
+    eventTypeId: number;
+    leadId: number;
+    eventStatusId: number;
+    postingLocationId: number;
+    startDate: string; // ISO date string
+    endDate: string;   // ISO date string
+};
+
 
 
