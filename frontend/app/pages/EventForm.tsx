@@ -35,7 +35,7 @@ export default function EventForm() {
     const [eventTypes, setEventTypes] = useState<EventType[]>([]);
     const [postingLocations, setPostingLocations] = useState<PostingLocation[]>([]);
     const [eventStatuses, setEventStatuses] = useState<EventStatus[]>([]);
-
+    const [loading, setLoading] = useState<boolean>(false);
     async function getPostingLocations(): Promise<PostingLocation[]> {
         try {
             const url = 'http://localhost:8080/api/v1/posting_locations'
@@ -93,6 +93,7 @@ export default function EventForm() {
         }
     }
     const onSubmit = async (data: EventRequest) => {
+        setLoading(true);
         try {
             const url = 'http://localhost:8080/api/v1/events'
             const response = await fetch(url, {
@@ -107,9 +108,12 @@ export default function EventForm() {
             }
             let result = await response.json();
             console.log(result);
+            setLoading(false);
+            reset()
 
         }catch (error: any) {
             console.log(error);
+            setLoading(false);
             return error;
         }
     }
@@ -303,12 +307,20 @@ export default function EventForm() {
                     <button type="button" className="text-sm/6 font-semibold text-white">
                         Cancel
                     </button>
+                    { !loading ?
                     <button
                         type="submit"
                         className="rounded-md bg-amber-400 px-3 py-2 text-sm font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500"
                     >
                         Save
-                    </button>
+                    </button> :
+                    <button type="button" className="rounded-md bg-amber-400 px-4 py-2 text-sm font-semibold text-white" disabled>
+                        <svg className="mr-3 size-4 animate-spin -ml-1 h-5 w-5 text-white" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="12" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4z"></path>
+                        </svg>
+                        Saving…
+                    </button>}
                 </div>
             </form>
         </div>
