@@ -13,6 +13,7 @@ export type EventResponseDto = {
 export type Theme = {
     id: number | null;
     name: string;
+    theme_examples: ThemeExample[]
 }
 
 export type  Unit = {
@@ -78,6 +79,14 @@ export type EventRequest = {
     startDate: string; // ISO date string
     endDate: string;   // ISO date string
 };
-
-
+export type ThemeExample = {
+    id: number;
+    name: string;
+    description: string;
+}
+export type ThemeCardProps = {
+    name: string;
+    isActive: boolean;
+    examples: ThemeExample[]
+}
 
