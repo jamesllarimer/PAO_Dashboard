@@ -35,10 +35,21 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
     }
     useEffect(() => {
-        getAllUsers().then((users) => setUsers(users));
-        if (users) {
-            setActiveUser(users[0])
-        }
+        let localUserId: string;
+        localUserId = localStorage.getItem("selectedUserId") || "null"
+        getAllUsers().then((users) => {
+            setUsers(users)
+            if (users) {
+                if(localUserId !== "null"){
+                    let localUser: User | null | undefined;
+                    localUser = users.find((user: User) => user.id === parseInt(localUserId));
+                    if(localUser) setActiveUser(localUser)
+                }else{
+                    setActiveUser(users[0])
+                    localStorage.setItem("selectedUserId", users[0].id.toString())
+                }
+            }
+        });
     }, []);
 
 

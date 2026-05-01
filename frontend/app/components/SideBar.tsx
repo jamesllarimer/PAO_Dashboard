@@ -75,7 +75,10 @@ export default function Sidebar() {
                     value={activeUser?.id ?? ''}
                     onChange={e => {
                         const selected = users?.find(u => String(u.id) === e.target.value);
-                        if (selected) setActiveUser(selected);
+                        if (selected) {
+                            setActiveUser(selected);
+                            localStorage.setItem("selectedUserId", selected.id.toString())
+                        }
                     }}
                     style={{
                         width: '100%',

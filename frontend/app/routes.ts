@@ -5,4 +5,5 @@ export default [
     route("/pao/dashboard", "pages/dashboard.tsx"),
     route("/hq/dashboard", "pages/headquartersDashboard.tsx"),
     route("/pao/events/new", "pages/EventForm.tsx"),
+    route("/pao/themes", "pages/themeReferencePage.tsx"),
 ] satisfies RouteConfig;

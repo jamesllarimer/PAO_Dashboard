@@ -5,14 +5,14 @@ import type {EventResponseDto, User} from "~/types";
 import EventGridRow from "~/components/EventGridRow";
 
 const ARMY_BLACK = '#221F20';
-const ARMY_GOLD  = '#FFCC01';
-const SURFACE    = '#2a2728';
-const SURFACE2   = '#332f30';
-const BORDER     = '#3f3b3c';
-const BORDER2    = '#4f4b4c';
-const MUTED      = '#9a9496';
-const WHITE      = '#FFFFFF';
-const GREEN      = '#6db86d';
+const ARMY_GOLD = '#FFCC01';
+const SURFACE = '#2a2728';
+const SURFACE2 = '#332f30';
+const BORDER = '#3f3b3c';
+const BORDER2 = '#4f4b4c';
+const MUTED = '#9a9496';
+const WHITE = '#FFFFFF';
+const GREEN = '#6db86d';
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -22,9 +22,16 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function HeadquartersDashboard() {
-    const [showThemeForm, setShowThemeForm]                   = useState<boolean>(false);
-    const [showSubordinateEvents, setShowSubordinateEvents]   = useState<boolean>(true);
-    const [events, setEvents]                                 = useState<EventResponseDto[]>([]);
+    const [showThemeForm, setShowThemeForm] = useState<boolean>(false);
+    const [showSubordinateEvents, setShowSubordinateEvents] = useState<boolean>(true);
+    const [events, setEvents] = useState<EventResponseDto[]>([]);
+    let submittedEvents = events.filter(x => x.status === "Submitted").length;
+    let publishedEvents = events.filter(x => x.status === "Published").length;
+    let ongoingEvents = events.filter(x => x.status === "Ongoing").length;
+    let pressConferences = events.filter(x => x.eventType === "Press Conference").length;
+    let commOutreachEvents = events.filter(x => x.eventType === "Community Outreach").length;
+    let cocEvents = events.filter(x => x.eventType === "Change of Command").length;
+    let trainingEvents = events.filter(x => x.eventType === "Training Exercise").length;
 
     async function getAllEvents() {
         try {
@@ -97,10 +104,14 @@ export default function HeadquartersDashboard() {
                     marginBottom: '20px',
                 }}>
                     {[
-                        {label: 'Total Events',    value: events.length,    sub: 'All units'},
-                        {label: 'Submitted',       value: '—',              sub: 'Awaiting review', gold: true},
-                        {label: 'Acknowledged',    value: '—',              sub: 'Incorporated',    green: true},
-                        {label: 'Units Reporting', value: '—',              sub: 'Active units'},
+                        {label: 'Total Events', value: events.length, sub: 'All units'},
+                        {label: 'Submitted', value: submittedEvents, sub: 'Submitted', gold: true},
+                        {label: 'Published', value: publishedEvents, sub: 'Published', green: true},
+                        {label: 'Ongoing', value: ongoingEvents, sub: 'Ongoing Projects'},
+                        {label: 'Community Outreach', value: commOutreachEvents, sub: 'Community Outreach'},
+                        {label: 'Press Conference', value: pressConferences, sub: 'Press Conference'},
+                        {label: 'Training Exercise', value: trainingEvents, sub: 'Training Exercise'},
+                        {label: 'Change of Command', value: cocEvents, sub: 'Change of Command'},
                     ].map(card => (
                         <div key={card.label} style={{
                             backgroundColor: SURFACE,
