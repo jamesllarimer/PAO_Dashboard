@@ -268,7 +268,7 @@ export default function HomePage() {
                             textTransform: "uppercase",
                             fontFamily: "'Barlow Condensed', sans-serif",
                         }}>
-              Public Affairs · Brigade → Division Reporting
+              Public Affairs · Subordinate → HQ Reporting
             </span>
                     </div>
 

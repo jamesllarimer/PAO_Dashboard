@@ -1,12 +1,10 @@
 import type {ThemeCardProps} from "~/types";
 
-export default function ThemeCard({ name, isActive, examples }: ThemeCardProps) {
-
+export default function ThemeCard({ name, examples }: ThemeCardProps) {
 
 
     return (
         <div className="bg-stone-900 border border-stone-700 rounded  w-full">
-
             {/* Header */}
             <div className="bg-stone-800 border-b border-yellow-400 px-4 py-3 flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -18,13 +16,6 @@ export default function ThemeCard({ name, isActive, examples }: ThemeCardProps) 
                         </h3>
                     </div>
                 </div>
-                <span className={`text-xs font-semibold uppercase tracking-wide px-2 py-0.5 rounded-sm border
-                    ${isActive
-                    ? 'bg-yellow-950 text-yellow-400 border-yellow-700'
-                    : 'bg-stone-700 text-stone-400 border-stone-600'
-                }`}>
-                    {isActive ? 'Active' : 'Inactive'}
-                </span>
             </div>
 
             {/* Examples list */}

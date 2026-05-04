@@ -8,15 +8,17 @@ public class EventRequest {
     private Long eventTypeId;
     private Long leadId;
     private Long eventStatusId;
+    private Long eventThemeId;
     private Date startDate;
     private Date endDate;
 
-    public EventRequest(String name, String description, Long eventTypeId, Long leadId, Long eventStatusId, Date startDate, Date endDate) {
+    public EventRequest(String name, String description, Long eventTypeId, Long leadId, Long eventStatusId,Long eventThemeId, Date startDate, Date endDate) {
         this.name = name;
         this.description = description;
         this.eventTypeId = eventTypeId;
         this.leadId = leadId;
         this.eventStatusId = eventStatusId;
+        this.eventThemeId = eventThemeId;
         this.startDate = startDate;
         this.endDate = endDate;
     }
@@ -75,5 +77,11 @@ public class EventRequest {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+    public Long getEventThemeId() {
+        return eventThemeId;
+    }
+    public void setEventThemeId(Long eventThemeId) {
+        this.eventThemeId = eventThemeId;
     }
 }

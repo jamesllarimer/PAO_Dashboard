@@ -4,7 +4,7 @@ import {date, number, string} from "yup";
 import {yupResolver} from "@hookform/resolvers/yup/src";
 import {useUserContext} from "~/context/UserProfileContext";
 import {useEffect, useState} from "react";
-import type {EventRequest, EventStatus, EventType, PostingLocation} from "~/types";
+import type {EventRequest, EventStatus, EventType, PostingLocation, Theme} from "~/types";
 
 const ARMY_BLACK = '#221F20';
 const ARMY_GOLD = '#FFCC01';
@@ -20,21 +20,16 @@ const validationSchema = Yup.object({
         eventStatusId: number().optional(),
         eventTypeId: number().optional(),
         postingLocationId: number().optional(),
+        eventThemeId: number().optional(),
     }
 );
-// private String name;
-// private String description;
-// private Long eventTypeId;
-// private Long leadId;
-// private Long eventStatusId;
-// private Date startDate;
-// private Date endDate;
 
 export default function EventForm() {
     const {users} = useUserContext();
     const [eventTypes, setEventTypes] = useState<EventType[]>([]);
     const [postingLocations, setPostingLocations] = useState<PostingLocation[]>([]);
     const [eventStatuses, setEventStatuses] = useState<EventStatus[]>([]);
+    const [eventThemes, setEventThemes] = useState<Theme[]>([])
     const [loading, setLoading] = useState<boolean>(false);
     async function getPostingLocations(): Promise<PostingLocation[]> {
         try {
@@ -92,6 +87,24 @@ export default function EventForm() {
             return error;
         }
     }
+    async function getEventThemes(): Promise<Theme[]> {
+        try {
+            const url = 'http://localhost:8080/api/v1/theme'
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            })
+            if (!response.ok) {
+                throw new Error(response.statusText);
+            }
+            return await response.json();
+        }catch (error: any) {
+            console.log(error);
+            return error;
+        }
+    }
     const onSubmit = async (data: EventRequest) => {
         setLoading(true);
         try {
@@ -127,16 +140,17 @@ export default function EventForm() {
         mode: "onBlur",
         resolver: yupResolver(validationSchema)
     });
+function getDataForDropdowns(){
+    getEventTypes().then((types: EventType[]): void => setEventTypes(types));
+    getPostingLocations().then((locations: PostingLocation[]): void => setPostingLocations(locations));
+    getEventStatuses().then((eventStatuses: EventStatus[]): void => setEventStatuses(eventStatuses));
+    getEventThemes().then((themes: Theme[]): void => setEventThemes(themes));
+}
 
     useEffect(() => {
-        getEventTypes().then((types: EventType[]): void => setEventTypes(types));
+        getDataForDropdowns();
     }, [])
-    useEffect(() => {
-        getPostingLocations().then((locations: PostingLocation[]): void => setPostingLocations(locations));
-    }, [])
-    useEffect(() => {
-        getEventStatuses().then((eventStatuses: EventStatus[]): void => setEventStatuses(eventStatuses));
-    }, [])
+
     return (
         <div className="w-1/2 mx-auto mt-2">
             <form onSubmit={handleSubmit(data => onSubmit(data))} method="post" className={"p-5 border border-yellow-500"}>
@@ -298,6 +312,28 @@ export default function EventForm() {
                             {errors.eventStatusId && (
                                 <p className="mt-1 text-sm text-red-500">
                                     {errors.eventStatusId.message}
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                    <div className="sm:col-span-3">
+                        <label htmlFor="EventTheme" className="block text-sm/6 font-medium text-white">
+                            Event Theme
+                        </label>
+                        <div className="mt-2 grid grid-cols-1">
+                            <select
+                                id="EventTheme"
+                                className="col-start-1 row-start-1 w-full  rounded-md bg-white/5 py-1.5 pr-8 pl-3 text-base text-white outline-1 -outline-offset-1 outline-white/10 *:bg-gray-800 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                                {...register('eventThemeId')}
+                            >
+                                {eventThemes?.map((theme: Theme) => (
+                                    <option key={theme.id}
+                                            value={theme.id}>{theme.name}</option>
+                                ))}
+                            </select>
+                            {errors.eventThemeId && (
+                                <p className="mt-1 text-sm text-red-500">
+                                    {errors.eventThemeId.message}
                                 </p>
                             )}
                         </div>

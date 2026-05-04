@@ -8,6 +8,7 @@ export type EventResponseDto = {
     lead: string;
     unit: string;
     status: string;
+    theme: string;
 };
 
 export type Theme = {
@@ -76,6 +77,7 @@ export type EventRequest = {
     leadId: number;
     eventStatusId: number;
     postingLocationId: number;
+    eventThemeId: number;
     startDate: string; // ISO date string
     endDate: string;   // ISO date string
 };
@@ -86,7 +88,6 @@ export type ThemeExample = {
 }
 export type ThemeCardProps = {
     name: string;
-    isActive: boolean;
     examples: ThemeExample[]
 }
 

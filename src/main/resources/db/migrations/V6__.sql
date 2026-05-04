@@ -1,0 +1,5 @@
+ALTER TABLE event
+    ADD theme_id BIGINT;
+
+ALTER TABLE event
+    ADD CONSTRAINT FK_EVENT_ON_THEME FOREIGN KEY (theme_id) REFERENCES theme (id);

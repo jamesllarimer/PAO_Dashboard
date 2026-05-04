@@ -24,14 +24,17 @@ export function meta({}: Route.MetaArgs) {
 export default function HeadquartersDashboard() {
     const [showThemeForm, setShowThemeForm] = useState<boolean>(false);
     const [showSubordinateEvents, setShowSubordinateEvents] = useState<boolean>(true);
-    const [events, setEvents] = useState<EventResponseDto[]>([]);
-    let submittedEvents = events.filter(x => x.status === "Submitted").length;
-    let publishedEvents = events.filter(x => x.status === "Published").length;
-    let ongoingEvents = events.filter(x => x.status === "Ongoing").length;
-    let pressConferences = events.filter(x => x.eventType === "Press Conference").length;
-    let commOutreachEvents = events.filter(x => x.eventType === "Community Outreach").length;
-    let cocEvents = events.filter(x => x.eventType === "Change of Command").length;
-    let trainingEvents = events.filter(x => x.eventType === "Training Exercise").length;
+    const [events, setEvents] = useState<EventResponseDto[]> ([]);
+    const [filteredEvents, setFilteredEvents] = useState<EventResponseDto[]>([]);
+
+    let units = [...new Set(events.map(e => e.unit))]
+    let submittedEvents = events.filter(x => x?.status === "Submitted").length;
+    let publishedEvents = events.filter(x => x?.status === "Published").length;
+    let ongoingEvents = events.filter(x => x?.status === "Ongoing").length;
+    let pressConferences = events.filter(x => x?.eventType === "Press Conference").length;
+    let commOutreachEvents = events.filter(x => x?.eventType === "Community Outreach").length;
+    let cocEvents = events.filter(x => x?.eventType === "Change of Command").length;
+    let trainingEvents = events.filter(x => x?.eventType === "Training Exercise").length;
 
     async function getAllEvents() {
         try {
@@ -40,11 +43,27 @@ export default function HeadquartersDashboard() {
                 headers: {'Content-Type': 'application/json'},
             });
             if (!response.ok) throw new Error(response.statusText);
-            const data = await response.json();
-            setEvents(data);
+            let data: EventResponseDto[] = await response.json();
+            let filtered: EventResponseDto[] = data.filter((event: EventResponseDto) => {
+               if( event?.status !== "Draft"){
+                   return event;
+            }
+            });
+            setEvents(filtered);
         } catch (error) {
             console.error(error);
         }
+    }
+
+    function filterEvents(selectedUnit: string) {
+        let eventsFiltered = events.filter(x => x?.unit === selectedUnit)
+        for (let event of eventsFiltered) {
+            console.log(event);
+        }
+        if (eventsFiltered.length > 0) {
+            setFilteredEvents(eventsFiltered);
+        }
+
     }
 
     useEffect(() => {
@@ -77,26 +96,10 @@ export default function HeadquartersDashboard() {
                             1st Armored Division · All subordinate units
                         </p>
                     </div>
-                    <button
-                        onClick={() => setShowThemeForm(prev => !prev)}
-                        style={{
-                            backgroundColor: ARMY_GOLD,
-                            color: ARMY_BLACK,
-                            border: 'none',
-                            padding: '8px 16px',
-                            fontSize: '12px',
-                            fontWeight: 700,
-                            borderRadius: '3px',
-                            cursor: 'pointer',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.04em',
-                        }}
-                    >
-                        + Add Theme
-                    </button>
                 </div>
 
                 {/* Stat cards */}
+                {/*todo refactor to allow user to manage what stats they see*/}
                 <div style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
@@ -142,51 +145,8 @@ export default function HeadquartersDashboard() {
                     ))}
                 </div>
 
-                {/* Theme form panel */}
-                {showThemeForm && (
-                    <div style={{
-                        backgroundColor: SURFACE,
-                        border: `1px solid ${BORDER}`,
-                        borderRadius: '4px',
-                        padding: '16px',
-                        marginBottom: '16px',
-                    }}>
-                        <div style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            marginBottom: '12px',
-                            paddingBottom: '10px',
-                            borderBottom: `1px solid ${BORDER}`,
-                        }}>
-                            <span style={{
-                                fontSize: '12px',
-                                fontWeight: 600,
-                                color: WHITE,
-                                textTransform: 'uppercase',
-                                letterSpacing: '0.06em',
-                            }}>
-                                New Theme
-                            </span>
-                            <button
-                                onClick={() => setShowThemeForm(false)}
-                                style={{
-                                    background: 'none',
-                                    border: 'none',
-                                    color: MUTED,
-                                    cursor: 'pointer',
-                                    fontSize: '16px',
-                                    lineHeight: 1,
-                                }}
-                            >
-                                ✕
-                            </button>
-                        </div>
-                        <ThemeForm/>
-                    </div>
-                )}
-
                 {/* Events table card */}
+                {/*todo need filtering and sorting*/}
                 <div style={{
                     backgroundColor: SURFACE,
                     border: `1px solid ${BORDER}`,
@@ -208,6 +168,9 @@ export default function HeadquartersDashboard() {
                         }}>
                             Subordinate Events
                         </span>
+                        <select name="unitFilter" id="UnitFiler" onChange={e => filterEvents(e.target.value)} >
+                            {units.map(unit => (<option value={unit}>{unit}</option>))}
+                        </select>
                         <button
                             onClick={() => setShowSubordinateEvents(prev => !prev)}
                             style={{
@@ -237,8 +200,8 @@ export default function HeadquartersDashboard() {
                                     No events found
                                 </div>
                             ) : (
-                                events.map((event: EventResponseDto) => (
-                                    <EventGridRow key={event.id} event={event}/>
+                                filteredEvents.map((event: EventResponseDto) => (
+                                    <EventGridRow key={event?.id} event={event}/>
                                 ))
                             )}
                         </div>

@@ -11,5 +11,6 @@ public record EventResponseDto(
     Date endDate,
     String lead,
     String unit,
-    String status
+    String status,
+    String theme
 ){}

@@ -7,14 +7,6 @@ const BORDER = '#3f3b3c';
 const MUTED = '#9a9496';
 
 export default function NavBar() {
-    const {users, setUsers} = useUserContext();
-
-    const handleProfileChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedId = Number(e.target.value);
-        // Update active user in context — wire to your context's setActiveUser if available
-        console.log('Switched to user id:', selectedId);
-    };
-
     return (
         <header style={{
             backgroundColor: ARMY_BLACK,
@@ -29,7 +21,6 @@ export default function NavBar() {
             top: 0,
             zIndex: 100,
         }}>
-            {/* Left — logo and app title */}
             <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
                 <div style={{
                     width: '28px',
@@ -54,32 +45,6 @@ export default function NavBar() {
                         Brigade → Division
                     </div>
                 </div>
-            </div>
-
-            {/* Right — persona switcher */}
-            <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                <label style={{fontSize: '11px', color: MUTED, textTransform: 'uppercase', letterSpacing: '0.07em'}}>
-                    Active user
-                </label>
-                <select
-                    onChange={handleProfileChange}
-                    style={{
-                        backgroundColor: '#2a2728',
-                        border: `1px solid ${BORDER}`,
-                        color: '#FFFFFF',
-                        padding: '5px 10px',
-                        fontSize: '12px',
-                        borderRadius: '3px',
-                        outline: 'none',
-                        cursor: 'pointer',
-                    }}
-                >
-                    {users?.map((user: User) => (
-                        <option key={user.id} value={user.id}>
-                            {`${user.rankAbbreviation} ${user.lastName} — ${user.role}`}
-                        </option>
-                    ))}
-                </select>
             </div>
         </header>
     );

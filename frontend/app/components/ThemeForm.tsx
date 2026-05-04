@@ -4,6 +4,7 @@ import {useForm} from "react-hook-form";
 import * as Yup from "yup";
 import {string} from "yup";
 import {yupResolver} from "@hookform/resolvers/yup/src";
+import MetaChip from "~/components/MetaChip";
 
 
 export default function ThemeForm() {
@@ -35,9 +36,6 @@ export default function ThemeForm() {
         }
     }
 
-    useEffect(() => {
-        getThemes();
-    }, []);
 
 
     const onSubmit = async (data: Theme) => {
@@ -48,28 +46,16 @@ export default function ThemeForm() {
             },
             body: JSON.stringify(data),
         });
-        getThemes();
         reset();
     }
 
     return (
         <div className={"dark:text-amber-50 text-gray-950 content-center text-center"}>
-            <div className="">
-                <h3 className={"text-2xl"}>Current Themes</h3>
-            </div>
-            <div
-                className="flex flex-row items-center justify-between m-auto max-w-7xl p-2 ">
-                {themes.map((theme) => {
-                    return <button className={"border-2 border-yellow-500 flex-col p-2 "}
-                                   key={theme.id}>{theme.name}</button>
-                })
-                }
-            </div>
                 <form onSubmit={handleSubmit(data => onSubmit(data))} method={'POST'} className="max-w-6xl mx-auto">
                     <label htmlFor="name">Theme Name</label>
-                    <input className={"dark: bg-gray-800 p-1 m-1"} type="text" id="name" {...register('name')} />
+                    <input className={"min-w-0 grow bg-gray-700 py-2 pl-1 m-2 text-base text-white placeholder:text-gray-500 focus:outline-white sm:text-sm/6"} type="text" id="name" {...register('name')} />
                     <button
-                        className="rounded-lg bg-green-700 px-4 py-2 text-sm text-white hover:bg-yellow-500">Submit
+                        className="rounded-lg bg-green-800 px-4 py-2 text-sm text-white hover:bg-yellow-500">Submit
                     </button>
                 </form>
         </div>

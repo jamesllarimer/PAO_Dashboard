@@ -10,18 +10,14 @@ const MUTED     = '#9a9496';
 const WHITE     = '#FFFFFF';
 
 const PAO_NAV = [
-    {to: '/pao/dashboard',  label: 'Dashboard'},
     {to: '/pao/events/new', label: 'New Event'},
-    {to: '/pao/events',     label: 'My Events'},
-    {to: '/pao/themes',     label: 'Themes Reference'},
+    {to: '/hq/dashboard',     label: 'My Events'},
+    {to: '/pao/themes',     label: 'Themes'},
 ];
 
 const HQ_NAV = [
-    {to: '/hq/dashboard',  label: 'Dashboard'},
-    {to: '/hq/events',     label: 'All Events'},
-    {to: '/hq/themes',     label: 'Themes'},
-    {to: '/hq/units',      label: 'Units & Users'},
-    {to: '/hq/lookups',    label: 'Manage Lookups'},
+    {to: '/hq/dashboard',    label: 'All Events'},
+    {to: '/pao/themes',     label: 'Themes'},
 ];
 
 export default function Sidebar() {
