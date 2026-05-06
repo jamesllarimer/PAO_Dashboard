@@ -24,7 +24,7 @@ const validationSchema = Yup.object({
     }
 );
 
-export default function EventForm() {
+export default function EventForm(eventid: number | undefined) {
     const {users} = useUserContext();
     const [eventTypes, setEventTypes] = useState<EventType[]>([]);
     const [postingLocations, setPostingLocations] = useState<PostingLocation[]>([]);
@@ -235,7 +235,8 @@ function getDataForDropdowns(){
                         <div className="mt-2 grid grid-cols-1">
                             <select
                                 id="Lead"
-                                className="col-start-1 row-start-1 w-full  rounded-md bg-white/5 py-1.5 pr-8 pl-3 text-base text-white outline-1 -outline-offset-1 outline-white/10 *:bg-gray-800 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                                className="col-start-1 row-start-1 w-full  rounded-md bg-white/5 py-1.5 pr-8 pl-3 text-base
+                                text-white outline-1 -outline-offset-1 outline-white/10 *:bg-gray-800 focus:outline-2 focus:-outline-offset-2 focus:outline-yellow-400 sm:text-sm/6"
                                 {...register('leadId')}
                             >
                                 {users?.map((user) => (
@@ -257,7 +258,8 @@ function getDataForDropdowns(){
                         <div className="mt-2 grid grid-cols-1">
                             <select
                                 id="EventType"
-                                className="col-start-1 row-start-1 w-full  rounded-md bg-white/5 py-1.5 pr-8 pl-3 text-base text-white outline-1 -outline-offset-1 outline-white/10 *:bg-gray-800 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                                className="col-start-1 row-start-1 w-full  rounded-md bg-white/5 py-1.5 pr-8 pl-3 text-base text-white outline-1 -outline-offset-1 
+                                outline-white/10 *:bg-gray-800 focus:outline-2 focus:-outline-offset-2 focus:outline-yellow-400 sm:text-sm/6"
                                 {...register('eventTypeId')}
                             >
                                 {eventTypes?.map((eventType: EventType) => (
@@ -279,7 +281,7 @@ function getDataForDropdowns(){
                         <div className="mt-2 grid grid-cols-1">
                             <select
                                 id="PostingLocation"
-                                className="col-start-1 row-start-1 w-full  rounded-md bg-white/5 py-1.5 pr-8 pl-3 text-base text-white outline-1 -outline-offset-1 outline-white/10 *:bg-gray-800 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                                className="col-start-1 row-start-1 w-full  rounded-md bg-white/5 py-1.5 pr-8 pl-3 text-base text-white outline-1 -outline-offset-1 outline-white/10 *:bg-gray-800 focus:outline-2 focus:-outline-offset-2 focus:outline-yellow-400 sm:text-sm/6"
                                 {...register('postingLocationId')}
                             >
                                 {postingLocations?.map((location: PostingLocation) => (
@@ -301,7 +303,7 @@ function getDataForDropdowns(){
                         <div className="mt-2 grid grid-cols-1">
                             <select
                                 id="EventStatus"
-                                className="col-start-1 row-start-1 w-full  rounded-md bg-white/5 py-1.5 pr-8 pl-3 text-base text-white outline-1 -outline-offset-1 outline-white/10 *:bg-gray-800 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                                className="col-start-1 row-start-1 w-full  rounded-md bg-white/5 py-1.5 pr-8 pl-3 text-base text-white outline-1 -outline-offset-1 outline-white/10 *:bg-gray-800 focus:outline-2 focus:-outline-offset-2 focus:outline-yellow-400 sm:text-sm/6"
                                 {...register('eventStatusId')}
                             >
                                 {eventStatuses?.map((status: EventStatus) => (
@@ -323,7 +325,7 @@ function getDataForDropdowns(){
                         <div className="mt-2 grid grid-cols-1">
                             <select
                                 id="EventTheme"
-                                className="col-start-1 row-start-1 w-full  rounded-md bg-white/5 py-1.5 pr-8 pl-3 text-base text-white outline-1 -outline-offset-1 outline-white/10 *:bg-gray-800 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                                className="col-start-1 row-start-1 w-full  rounded-md bg-white/5 py-1.5 pr-8 pl-3 text-base text-white outline-1 -outline-offset-1 outline-white/10 *:bg-gray-800 focus:outline-2 focus:-outline-offset-2 focus:outline-yellow-400 sm:text-sm/6"
                                 {...register('eventThemeId')}
                             >
                                 {eventThemes?.map((theme: Theme) => (

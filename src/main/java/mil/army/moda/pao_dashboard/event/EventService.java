@@ -5,6 +5,8 @@ import mil.army.moda.pao_dashboard.event_status.EventStatus;
 import mil.army.moda.pao_dashboard.event_status.EventStatusRepository;
 import mil.army.moda.pao_dashboard.event_type.EventType;
 import mil.army.moda.pao_dashboard.event_type.EventTypeRepository;
+import mil.army.moda.pao_dashboard.posting_location.PostingLocation;
+import mil.army.moda.pao_dashboard.posting_location.PostingLocationRepository;
 import mil.army.moda.pao_dashboard.theme.Theme;
 import mil.army.moda.pao_dashboard.theme.ThemeRepository;
 import mil.army.moda.pao_dashboard.user.UserProfile;
@@ -23,13 +25,15 @@ public class EventService {
     private final UserRepository userRepository;
     private final EventTypeRepository eventTypeRepository;
     private final ThemeRepository themeRepository;
+    private final PostingLocationRepository postingLocationRepository;
 
-    public EventService(EventRepository eventRepository, EventStatusRepository eventStatusRepository, UserRepository userRepository, EventTypeRepository eventTypeRepository, ThemeRepository themeRepository) {
+    public EventService(EventRepository eventRepository, EventStatusRepository eventStatusRepository, UserRepository userRepository, EventTypeRepository eventTypeRepository, ThemeRepository themeRepository, PostingLocationRepository postingLocationRepository) {
         this.eventRepository = eventRepository;
         this.eventStatusRepository = eventStatusRepository;
         this.userRepository = userRepository;
         this.eventTypeRepository = eventTypeRepository;
         this.themeRepository = themeRepository;
+        this.postingLocationRepository = postingLocationRepository;
     }
 
     public List<EventResponseDto> findAll() {
@@ -39,12 +43,19 @@ public class EventService {
                         e.getName(),
                         e.getDescription(),
                         e.getEvent_type().getName(),
+                        e.getEvent_type().getId(),
                         e.getStart_date(),
                         e.getEnd_date(),
                         e.getLead().getRank().getAbbreviation() + " " + e.getLead().getLastName(),
+                        e.getLead().getId(),
                         e.getLead().getUnit().getName(),
+                        e.getLead().getUnit().getId(),
                         e.getEventStatus().getName(),
-                        e.getTheme().getName()
+                        e.getEventStatus().getId(),
+                        e.getTheme().getName(),
+                        e.getTheme().getId(),
+                        e.getPostingLocation().getName(),
+                        e.getPostingLocation().getId()
                 )).toList();
     }
 
@@ -74,21 +85,66 @@ public class EventService {
         Theme theme = themeRepository.findById(request.getEventThemeId())
                         .orElseThrow(() -> new RuntimeException("Invalid theme"));
 
+        PostingLocation postingLocation = postingLocationRepository.findById(request.getPostingLocationId())
+                .orElseThrow(() -> new RuntimeException("Invalid posting location"));
+
         event.setEvent_type(eventType);
         event.setLead(lead);
         event.setEventStatus(status);
         event.setTheme(theme);
+        event.setPostingLocation(postingLocation);
 
         return eventRepository.save(event);
     }
 
-    public Event update(Long id, Event updated) {
+    public EventResponseDto update(Long id, EventRequest updated) {
         Event existing = findById(id);
+
+        // Fetch related entities by ID
+        EventType eventType = eventTypeRepository.findById(updated.getEventTypeId())
+                .orElseThrow(() -> new RuntimeException("Invalid event type"));
+
+        UserProfile lead = userRepository.findById(updated.getLeadId())
+                .orElseThrow(() -> new RuntimeException("Invalid user"));
+
+        EventStatus status = eventStatusRepository.findById(updated.getEventStatusId())
+                .orElseThrow(() -> new RuntimeException("Invalid status"));
+
+        Theme theme = themeRepository.findById(updated.getEventThemeId())
+                .orElseThrow(() -> new RuntimeException("Invalid theme"));
+        PostingLocation postingLocation = postingLocationRepository.findById(updated.getPostingLocationId())
+                .orElseThrow(() -> new RuntimeException("Invalid posting location"));
+
         existing.setName(updated.getName());
         existing.setDescription(updated.getDescription());
-        existing.setStart_date(updated.getStart_date());
-        existing.setEnd_date(updated.getEnd_date());
-        return eventRepository.save(existing);
+        existing.setStart_date(updated.getStartDate());
+        existing.setEnd_date(updated.getEndDate());
+        existing.setEvent_type(eventType);
+        existing.setLead(lead);
+        existing.setEventStatus(status);
+        existing.setTheme(theme);
+        existing.setPostingLocation(postingLocation);
+       Event saved = eventRepository.save(existing);
+        // Map the saved entity (with its generated ID) to the response DTO
+        return new EventResponseDto(
+                saved.getId(),
+                saved.getName(),
+                saved.getDescription(),
+                saved.getEvent_type().getName(),
+                saved.getEvent_type().getId(),
+                saved.getStart_date(),
+                saved.getEnd_date(),
+                saved.getLead().getRank().getAbbreviation() + " " + saved.getLead().getLastName(),
+                saved.getLead().getId(),
+                saved.getLead().getUnit().getName(),
+                saved.getLead().getUnit().getId(),
+                saved.getEventStatus().getName(),
+                saved.getEventStatus().getId(),
+                saved.getTheme().getName(),
+                saved.getTheme().getId(),
+                saved.getPostingLocation().getName(),
+                saved.getPostingLocation().getId()
+        );
     }
 
     public void delete(Long id) {

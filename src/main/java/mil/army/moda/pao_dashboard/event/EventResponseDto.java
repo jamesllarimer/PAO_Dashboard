@@ -7,10 +7,17 @@ public record EventResponseDto(
     String name,
     String description,
     String eventType,
+    Long eventTypeId,
     Date startDate,
     Date endDate,
     String lead,
+    Long leadId,
     String unit,
+    Long unitId,
     String status,
-    String theme
+    Long eventStatusId,
+    String theme,
+    Long eventThemeId,
+    String postingLocation,
+    Long postingLocationId
 ){}

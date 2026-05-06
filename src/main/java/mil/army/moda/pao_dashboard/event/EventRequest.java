@@ -1,5 +1,7 @@
 package mil.army.moda.pao_dashboard.event;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 public class EventRequest {
@@ -9,10 +11,14 @@ public class EventRequest {
     private Long leadId;
     private Long eventStatusId;
     private Long eventThemeId;
+    private Long postingLocationId;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date startDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date endDate;
 
-    public EventRequest(String name, String description, Long eventTypeId, Long leadId, Long eventStatusId,Long eventThemeId, Date startDate, Date endDate) {
+
+    public EventRequest(String name, String description, Long eventTypeId, Long leadId, Long eventStatusId, Long eventThemeId, Date startDate, Date endDate, Long postingLocationId) {
         this.name = name;
         this.description = description;
         this.eventTypeId = eventTypeId;
@@ -21,6 +27,7 @@ public class EventRequest {
         this.eventThemeId = eventThemeId;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.postingLocationId = postingLocationId;
     }
 
     public String getName() {
@@ -83,5 +90,13 @@ public class EventRequest {
     }
     public void setEventThemeId(Long eventThemeId) {
         this.eventThemeId = eventThemeId;
+    }
+
+    public Long getPostingLocationId() {
+        return postingLocationId;
+    }
+
+    public void setPostingLocationId(Long postingLocationId) {
+        this.postingLocationId = postingLocationId;
     }
 }

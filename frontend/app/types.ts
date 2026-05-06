@@ -3,16 +3,23 @@ export type EventResponseDto = {
     name: string;
     description: string;
     eventType: string;
+    eventTypeId: number;
     startDate: string;
     endDate: string;
     lead: string;
+    leadId: number;
     unit: string;
+    unitId: number;
     status: string;
+    eventStatusId: number;
     theme: string;
+    eventThemeId: number;
+    postingLocation: string;
+    postingLocationId: number;
 };
 
 export type Theme = {
-    id: number | null;
+    id: number;
     name: string;
     theme_examples: ThemeExample[]
 }

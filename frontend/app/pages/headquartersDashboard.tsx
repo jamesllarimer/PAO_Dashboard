@@ -1,8 +1,9 @@
 import type {Route} from "./+types/headquartersDashboard";
 import {useEffect, useState} from "react";
 import ThemeForm from "../components/ThemeForm";
-import type {EventResponseDto, User} from "~/types";
+import type {EventRequest, EventResponseDto, EventStatus, EventType, PostingLocation, Theme, User} from "~/types";
 import EventGridRow from "~/components/EventGridRow";
+import {useUserContext} from "~/context/UserProfileContext";
 
 const ARMY_BLACK = '#221F20';
 const ARMY_GOLD = '#FFCC01';
@@ -22,15 +23,19 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function HeadquartersDashboard() {
-    const [showThemeForm, setShowThemeForm] = useState<boolean>(false);
     const [showSubordinateEvents, setShowSubordinateEvents] = useState<boolean>(true);
-    const [events, setEvents] = useState<EventResponseDto[]> ([]);
+    const [events, setEvents] = useState<EventResponseDto[]>([]);
     const [filteredEvents, setFilteredEvents] = useState<EventResponseDto[]>([]);
+    const [eventTypes, setEventTypes]           = useState<EventType[]>([]);
+    const [postingLocations, setPostingLocations] = useState<PostingLocation[]>([]);
+    const [eventStatuses, setEventStatuses]     = useState<EventStatus[]>([]);
+    const [eventThemes, setEventThemes]         = useState<Theme[]>([]);
+    const {activeUser, users} = useUserContext();
 
     let units = [...new Set(events.map(e => e.unit))]
     let submittedEvents = events.filter(x => x?.status === "Submitted").length;
     let publishedEvents = events.filter(x => x?.status === "Published").length;
-    let ongoingEvents = events.filter(x => x?.status === "Ongoing").length;
+    let inProgressEvents = events.filter(x => x?.status === "In Progress").length;
     let pressConferences = events.filter(x => x?.eventType === "Press Conference").length;
     let commOutreachEvents = events.filter(x => x?.eventType === "Community Outreach").length;
     let cocEvents = events.filter(x => x?.eventType === "Change of Command").length;
@@ -45,29 +50,97 @@ export default function HeadquartersDashboard() {
             if (!response.ok) throw new Error(response.statusText);
             let data: EventResponseDto[] = await response.json();
             let filtered: EventResponseDto[] = data.filter((event: EventResponseDto) => {
-               if( event?.status !== "Draft"){
-                   return event;
-            }
+                if (event?.status !== "Draft") {
+                    return event;
+                }
             });
+            filtered = filtered.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
             setEvents(filtered);
+            setFilteredEvents(filtered);
+            for (let event of filtered) {
+                console.log(event);
+            }
         } catch (error) {
             console.error(error);
         }
     }
 
     function filterEvents(selectedUnit: string) {
-        let eventsFiltered = events.filter(x => x?.unit === selectedUnit)
-        for (let event of eventsFiltered) {
-            console.log(event);
+        if (selectedUnit === "All") {
+            setFilteredEvents(events);
+            return
         }
+        let eventsFiltered = events.filter(x => x?.unit === selectedUnit)
         if (eventsFiltered.length > 0) {
             setFilteredEvents(eventsFiltered);
         }
 
     }
+    async function handleDeleteEvent(id: number) {
+        try {
+            const response = await fetch(`http://localhost:8080/api/v1/events/${id}/delete`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            if (!response.ok) throw new Error(response.statusText);
+
+            // Remove from both state arrays — no page reload needed
+            setEvents(prev => prev.filter(e => e.id !== id));
+            setFilteredEvents(prev => prev.filter(e => e.id !== id));
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function handleSaveEvent(updated: EventResponseDto) {
+        const body: EventRequest = {
+            name:              updated.name,
+            description:       updated.description,
+            eventTypeId:       updated.eventTypeId,
+            leadId:            updated.leadId,
+            eventStatusId:     updated.eventStatusId,
+            postingLocationId: updated.postingLocationId,
+            eventThemeId:      updated.eventThemeId,
+            startDate:         updated.startDate,
+            endDate:           updated.endDate,
+        };
+        try {
+            const response = await fetch(`http://localhost:8080/api/v1/events/${updated.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body),
+            });
+            if (!response.ok) throw new Error(response.statusText);
+
+            const saved: EventResponseDto = await response.json();
+
+            // Swap the old record out of both state arrays
+            const swap = (list: EventResponseDto[]) =>
+                list.map(e => (e.id === saved.id ? saved : e))
+
+            setEvents(swap);
+            setFilteredEvents(swap);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function getDropdownData() {
+        const [types, locations, statuses, themes] = await Promise.all([
+            fetch('http://localhost:8080/api/v1/event_type').then(r => r.json()),
+            fetch('http://localhost:8080/api/v1/posting_locations').then(r => r.json()),
+            fetch('http://localhost:8080/api/v1/event_status').then(r => r.json()),
+            fetch('http://localhost:8080/api/v1/theme').then(r => r.json()),
+        ]);
+        setEventTypes(types);
+        setPostingLocations(locations);
+        setEventStatuses(statuses);
+        setEventThemes(themes);
+    }
 
     useEffect(() => {
         getAllEvents();
+        getDropdownData();
     }, []);
 
 
@@ -110,7 +183,7 @@ export default function HeadquartersDashboard() {
                         {label: 'Total Events', value: events.length, sub: 'All units'},
                         {label: 'Submitted', value: submittedEvents, sub: 'Submitted', gold: true},
                         {label: 'Published', value: publishedEvents, sub: 'Published', green: true},
-                        {label: 'Ongoing', value: ongoingEvents, sub: 'Ongoing Projects'},
+                        {label: 'In Progress', value: inProgressEvents, sub: 'Ongoing Projects'},
                         {label: 'Community Outreach', value: commOutreachEvents, sub: 'Community Outreach'},
                         {label: 'Press Conference', value: pressConferences, sub: 'Press Conference'},
                         {label: 'Training Exercise', value: trainingEvents, sub: 'Training Exercise'},
@@ -168,9 +241,19 @@ export default function HeadquartersDashboard() {
                         }}>
                             Subordinate Events
                         </span>
-                        <select name="unitFilter" id="UnitFiler" onChange={e => filterEvents(e.target.value)} >
-                            {units.map(unit => (<option value={unit}>{unit}</option>))}
-                        </select>
+                        <div className={"sm:col-span-3"}>
+                            <label htmlFor="UnitFilter" className="block text-sm/6 font-medium text-white">
+                                Event Type
+                            </label>
+                            <div className="mt-2">
+                                <select className="col-start-1 row-start-1 w-full  rounded-md bg-white/5 py-1.5 pr-8 pl-3 text-base text-white outline-1 -outline-offset-1
+                                outline-white/10 *:bg-gray-800 focus:outline-2 focus:-outline-offset-2 focus:outline-yellow-400 sm:text-sm/6"
+                                        name="unitFilter" id="UnitFilter" onChange={e => filterEvents(e.target.value)}>
+                                    <option value="All">All</option>
+                                    {units.map(unit => (<option value={unit}>{unit}</option>))}
+                                </select>
+                            </div>
+                        </div>
                         <button
                             onClick={() => setShowSubordinateEvents(prev => !prev)}
                             style={{
@@ -201,7 +284,17 @@ export default function HeadquartersDashboard() {
                                 </div>
                             ) : (
                                 filteredEvents.map((event: EventResponseDto) => (
-                                    <EventGridRow key={event?.id} event={event}/>
+                                    <EventGridRow
+                                        key={event.id}
+                                        event={event}
+                                        users={users ?? []}
+                                        eventTypes={eventTypes}
+                                        postingLocations={postingLocations}
+                                        eventStatuses={eventStatuses}
+                                        eventThemes={eventThemes}
+                                        onDelete={handleDeleteEvent}
+                                        onSave={handleSaveEvent}
+                                    />
                                 ))
                             )}
                         </div>
