@@ -2,7 +2,6 @@ import type {EventRequest, EventResponseDto, EventStatus, EventType, PostingLoca
 import MetaChip from "~/components/MetaChip";
 import React, { useState } from "react";
 
-// ─── Types ───────────────────────────────────────────────────────────────────
 
 type GridRowProps = {
     event: EventResponseDto;
@@ -18,7 +17,6 @@ type GridRowProps = {
 };
 type EditDraft = EventRequest & { id: number };
 
-// ─── Design tokens ────────────────────────────────────────────────────────────
 
 const ARMY_GOLD = '#FFCC01';
 const SURFACE   = '#2a2728';
@@ -31,7 +29,6 @@ const WHITE     = '#FFFFFF';
 const RED_DIM   = '#e87070';
 const GREEN_DIM = '#6db86d';
 
-// ─── Shared style helpers ─────────────────────────────────────────────────────
 
 const INPUT_BASE: React.CSSProperties = {
     backgroundColor: '#1a1718',
@@ -121,7 +118,6 @@ function formatDate(date: string | undefined) {
     });
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
 
 export default function EventGridRow({
                                          event,

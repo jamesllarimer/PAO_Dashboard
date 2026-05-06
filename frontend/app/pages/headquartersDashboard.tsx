@@ -14,7 +14,7 @@ const BORDER2 = '#4f4b4c';
 const MUTED = '#9a9496';
 const WHITE = '#FFFFFF';
 const GREEN = '#6db86d';
-
+type EditDraft = EventRequest & { id: number };
 export function meta({}: Route.MetaArgs) {
     return [
         {title: "PAO Reporting — HQ Dashboard"},
@@ -26,10 +26,10 @@ export default function HeadquartersDashboard() {
     const [showSubordinateEvents, setShowSubordinateEvents] = useState<boolean>(true);
     const [events, setEvents] = useState<EventResponseDto[]>([]);
     const [filteredEvents, setFilteredEvents] = useState<EventResponseDto[]>([]);
-    const [eventTypes, setEventTypes]           = useState<EventType[]>([]);
+    const [eventTypes, setEventTypes] = useState<EventType[]>([]);
     const [postingLocations, setPostingLocations] = useState<PostingLocation[]>([]);
-    const [eventStatuses, setEventStatuses]     = useState<EventStatus[]>([]);
-    const [eventThemes, setEventThemes]         = useState<Theme[]>([]);
+    const [eventStatuses, setEventStatuses] = useState<EventStatus[]>([]);
+    const [eventThemes, setEventThemes] = useState<Theme[]>([]);
     const {activeUser, users} = useUserContext();
 
     let units = [...new Set(events.map(e => e.unit))]
@@ -76,11 +76,12 @@ export default function HeadquartersDashboard() {
         }
 
     }
+
     async function handleDeleteEvent(id: number) {
         try {
             const response = await fetch(`http://localhost:8080/api/v1/events/${id}/delete`, {
                 method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {'Content-Type': 'application/json'},
             });
             if (!response.ok) throw new Error(response.statusText);
 
@@ -92,22 +93,22 @@ export default function HeadquartersDashboard() {
         }
     }
 
-    async function handleSaveEvent(updated: EventResponseDto) {
+    async function handleSaveEvent(draft: EditDraft) {
         const body: EventRequest = {
-            name:              updated.name,
-            description:       updated.description,
-            eventTypeId:       updated.eventTypeId,
-            leadId:            updated.leadId,
-            eventStatusId:     updated.eventStatusId,
-            postingLocationId: updated.postingLocationId,
-            eventThemeId:      updated.eventThemeId,
-            startDate:         updated.startDate,
-            endDate:           updated.endDate,
+            name: draft.name,
+            description: draft.description,
+            eventTypeId: draft.eventTypeId,
+            leadId: draft.leadId,
+            eventStatusId: draft.eventStatusId,
+            postingLocationId: draft.postingLocationId,
+            eventThemeId: draft.eventThemeId,
+            startDate: draft.startDate,
+            endDate: draft.endDate,
         };
         try {
-            const response = await fetch(`http://localhost:8080/api/v1/events/${updated.id}`, {
+            const response = await fetch(`http://localhost:8080/api/v1/events/${draft.id}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(body),
             });
             if (!response.ok) throw new Error(response.statusText);
@@ -241,34 +242,18 @@ export default function HeadquartersDashboard() {
                         }}>
                             Subordinate Events
                         </span>
-                        <div className={"sm:col-span-3"}>
-                            <label htmlFor="UnitFilter" className="block text-sm/6 font-medium text-white">
-                                Event Type
+                        <div className={"flex items-center gap-1"}>
+                            <label htmlFor="UnitFilter" className="text-sm/6 font-medium text-white">
+                                View By Unit
                             </label>
-                            <div className="mt-2">
-                                <select className="col-start-1 row-start-1 w-full  rounded-md bg-white/5 py-1.5 pr-8 pl-3 text-base text-white outline-1 -outline-offset-1
+
+                            <select className="rounded-md bg-white/5 py-1.5 pr-8 pl-3 text-base text-white outline-1 -outline-offset-1
                                 outline-white/10 *:bg-gray-800 focus:outline-2 focus:-outline-offset-2 focus:outline-yellow-400 sm:text-sm/6"
-                                        name="unitFilter" id="UnitFilter" onChange={e => filterEvents(e.target.value)}>
-                                    <option value="All">All</option>
-                                    {units.map(unit => (<option value={unit}>{unit}</option>))}
-                                </select>
-                            </div>
+                                    name="unitFilter" id="UnitFilter" onChange={e => filterEvents(e.target.value)}>
+                                <option value="All">All</option>
+                                {units.map(unit => (<option value={unit}>{unit}</option>))}
+                            </select>
                         </div>
-                        <button
-                            onClick={() => setShowSubordinateEvents(prev => !prev)}
-                            style={{
-                                background: 'transparent',
-                                border: `1px solid ${ARMY_GOLD}`,
-                                color: ARMY_GOLD,
-                                padding: '5px 12px',
-                                fontSize: '11px',
-                                fontWeight: 600,
-                                borderRadius: '3px',
-                                cursor: 'pointer',
-                            }}
-                        >
-                            {showSubordinateEvents ? 'Hide' : 'Show'}
-                        </button>
                     </div>
 
                     {showSubordinateEvents && (
