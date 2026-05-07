@@ -29,4 +29,10 @@ public class ThemeController {
     public Theme getTheme(@PathVariable Long id) {
         return themeService.getTheme(id);
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        themeService.delete(id);
+    }
 }

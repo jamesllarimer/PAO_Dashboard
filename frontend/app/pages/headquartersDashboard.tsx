@@ -5,15 +5,6 @@ import type {EventRequest, EventResponseDto, EventStatus, EventType, PostingLoca
 import EventGridRow from "~/components/EventGridRow";
 import {useUserContext} from "~/context/UserProfileContext";
 
-const ARMY_BLACK = '#221F20';
-const ARMY_GOLD = '#FFCC01';
-const SURFACE = '#2a2728';
-const SURFACE2 = '#332f30';
-const BORDER = '#3f3b3c';
-const BORDER2 = '#4f4b4c';
-const MUTED = '#9a9496';
-const WHITE = '#FFFFFF';
-const GREEN = '#6db86d';
 type EditDraft = EventRequest & { id: number };
 export function meta({}: Route.MetaArgs) {
     return [
@@ -148,27 +139,17 @@ export default function HeadquartersDashboard() {
 
 
     return (
-        <div style={{display: 'flex', flex: 1}}>
+        <div className="flex flex-1">
 
-            <main style={{
-                flex: 1,
-                padding: '20px',
-                overflowY: 'auto',
-                backgroundColor: ARMY_BLACK,
-            }}>
+            <main className="flex-1 p-5 overflow-y-auto bg-army-black">
 
                 {/* Page header */}
-                <div style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    justifyContent: 'space-between',
-                    marginBottom: '20px',
-                }}>
+                <div className="flex items-start justify-between mb-5">
                     <div>
-                        <h1 style={{fontSize: '22px', fontWeight: 600, color: WHITE, margin: 0}}>
+                        <h1 className="text-[22px] font-semibold text-white m-0">
                             HQ Dashboard
                         </h1>
-                        <p style={{fontSize: '12px', color: MUTED, margin: '4px 0 0'}}>
+                        <p className="text-xs text-muted mt-1 mb-0">
                             1st Armored Division · All subordinate units
                         </p>
                     </div>
@@ -176,12 +157,7 @@ export default function HeadquartersDashboard() {
 
                 {/* Stat cards */}
                 {/*todo refactor to allow user to manage what stats they see*/}
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
-                    gap: '10px',
-                    marginBottom: '20px',
-                }}>
+                <div className="grid grid-cols-4 gap-[10px] mb-5">
                     {[
                         {label: 'Total Events', value: events.length, sub: 'All types'},
                         {label: 'Submitted', value: submittedEvents, sub: 'Submitted', gold: true},
@@ -201,29 +177,14 @@ export default function HeadquartersDashboard() {
                         // Training Exercise
 
                     ].map(card => (
-                        <div key={card.label} style={{
-                            backgroundColor: SURFACE,
-                            border: `1px solid ${BORDER}`,
-                            borderRadius: '4px',
-                            padding: '14px',
-                        }}>
-                            <div style={{
-                                fontSize: '10px',
-                                color: MUTED,
-                                textTransform: 'uppercase',
-                                letterSpacing: '0.08em',
-                                marginBottom: '6px',
-                            }}>
+                        <div key={card.label} className="bg-surface border border-ui-border rounded p-[14px]">
+                            <div className="text-[10px] text-muted uppercase tracking-[0.08em] mb-1.5">
                                 {card.label}
                             </div>
-                            <div style={{
-                                fontSize: '24px',
-                                fontWeight: 700,
-                                color: card.gold ? ARMY_GOLD : card.green ? GREEN : WHITE,
-                            }}>
+                            <div className={`text-2xl font-bold ${card.gold ? 'text-army-gold' : card.green ? 'text-army-green' : 'text-white'}`}>
                                 {card.value}
                             </div>
-                            <div style={{fontSize: '10px', color: MUTED, marginTop: '4px'}}>
+                            <div className="text-[10px] text-muted mt-1">
                                 {card.sub}
                             </div>
                         </div>
@@ -232,25 +193,9 @@ export default function HeadquartersDashboard() {
 
                 {/* Events table card */}
                 {/*todo need filtering and sorting*/}
-                <div style={{
-                    backgroundColor: SURFACE,
-                    border: `1px solid ${BORDER}`,
-                    borderRadius: '4px',
-                }}>
-                    <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        padding: '12px 16px',
-                        borderBottom: `1px solid ${BORDER}`,
-                    }}>
-                        <span style={{
-                            fontSize: '12px',
-                            fontWeight: 600,
-                            color: WHITE,
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.06em',
-                        }}>
+                <div className="bg-surface border border-ui-border rounded">
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-ui-border">
+                        <span className="text-xs font-semibold text-white uppercase tracking-[0.06em]">
                             Subordinate Events
                         </span>
                         <div className={"flex items-center gap-1"}>
@@ -268,14 +213,9 @@ export default function HeadquartersDashboard() {
                     </div>
 
                     {showSubordinateEvents && (
-                        <div style={{padding: '16px'}}>
+                        <div className="p-4">
                             {events.length === 0 ? (
-                                <div style={{
-                                    padding: '32px',
-                                    textAlign: 'center',
-                                    color: MUTED,
-                                    fontSize: '13px',
-                                }}>
+                                <div className="p-8 text-center text-muted text-[13px]">
                                     No events found
                                 </div>
                             ) : (

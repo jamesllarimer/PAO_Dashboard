@@ -1,70 +1,37 @@
 import {NavLink} from "react-router";
 import {useUserContext} from "~/context/UserProfileContext";
 
-const ARMY_GOLD = '#FFCC01';
-const SURFACE   = '#2a2728';
-const SURFACE2  = '#332f30';
-const BORDER    = '#3f3b3c';
-const BORDER2   = '#4f4b4c';
-const MUTED     = '#9a9496';
-const WHITE     = '#FFFFFF';
-
 const PAO_NAV = [
     {to: '/pao/events/new', label: 'New Event'},
-    {to: '/hq/dashboard',     label: 'My Events'},
+    {to: '/hq/dashboard',   label: 'My Events'},
     {to: '/pao/themes',     label: 'Themes'},
 ];
 
 const HQ_NAV = [
-    {to: '/hq/dashboard',    label: 'All Events'},
-    {to: '/pao/themes',     label: 'Themes'},
+    {to: '/hq/dashboard', label: 'All Events'},
+    {to: '/pao/themes',   label: 'Themes'},
 ];
 
 export default function Sidebar() {
     const {activeUser, users, setActiveUser} = useUserContext();
 
-    const isHQ  = activeUser?.role === 'HQ_VIEWER';
-    const navItems = isHQ ? HQ_NAV : PAO_NAV;
+    const isHQ       = activeUser?.role === 'HQ_VIEWER';
+    const navItems   = isHQ ? HQ_NAV : PAO_NAV;
     const sectionLabel = isHQ ? 'HQ Admin' : 'PAO Unit';
 
-    const linkStyle = ({isActive}: {isActive: boolean}) => ({
-        display: 'flex',
-        alignItems: 'center',
-        padding: '8px 14px',
-        background: 'none',
-        border: 'none',
-        borderLeft: `3px solid ${isActive ? ARMY_GOLD : 'transparent'}`,
-        color: isActive ? ARMY_GOLD : MUTED,
-        backgroundColor: isActive ? SURFACE2 : 'transparent',
-        fontSize: '12px',
-        cursor: 'pointer',
-        width: '100%',
-        textDecoration: 'none',
-        textAlign: 'left' as const,
-        transition: 'all 0.15s',
-    });
+    const linkCls = ({isActive}: {isActive: boolean}) =>
+        `flex items-center py-2 px-[14px] text-xs cursor-pointer w-full no-underline text-left transition-all duration-[150ms] border-l-[3px] ${
+            isActive
+                ? 'border-l-army-gold text-army-gold bg-surface-2'
+                : 'border-l-transparent text-muted bg-transparent'
+        }`;
 
     return (
-        <aside style={{
-            width: '200px',
-            backgroundColor: SURFACE,
-            borderRight: `1px solid ${BORDER}`,
-            flexShrink: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            minHeight: '100%',
-        }}>
+        <aside className="w-[200px] bg-surface border-r border-ui-border shrink-0 flex flex-col min-h-full">
 
             {/* User switcher */}
-            <div style={{padding: '12px', borderBottom: `1px solid ${BORDER}`}}>
-                <label style={{
-                    display: 'block',
-                    fontSize: '9px',
-                    color: MUTED,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.1em',
-                    marginBottom: '6px',
-                }}>
+            <div className="p-3 border-b border-ui-border">
+                <label className="block text-[9px] text-muted uppercase tracking-[0.1em] mb-1.5">
                     Active User
                 </label>
                 <select
@@ -73,20 +40,10 @@ export default function Sidebar() {
                         const selected = users?.find(u => String(u.id) === e.target.value);
                         if (selected) {
                             setActiveUser(selected);
-                            localStorage.setItem("selectedUserId", selected.id.toString())
+                            localStorage.setItem("selectedUserId", selected.id.toString());
                         }
                     }}
-                    style={{
-                        width: '100%',
-                        backgroundColor: SURFACE2,
-                        border: `1px solid ${BORDER2}`,
-                        color: WHITE,
-                        padding: '6px 8px',
-                        fontSize: '11px',
-                        borderRadius: '3px',
-                        outline: 'none',
-                        cursor: 'pointer',
-                    }}
+                    className="w-full bg-surface-2 border border-ui-border-2 text-white py-[6px] px-2 text-[11px] rounded-[3px] outline-none cursor-pointer"
                 >
                     {users?.map(user => (
                         <option key={user.id} value={user.id}>
@@ -96,55 +53,29 @@ export default function Sidebar() {
                 </select>
 
                 {/* Role indicator */}
-                <div style={{
-                    marginTop: '8px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                }}>
-                    <div style={{
-                        width: '6px',
-                        height: '6px',
-                        borderRadius: '50%',
-                        backgroundColor: isHQ ? ARMY_GOLD : '#6db86d',
-                        flexShrink: 0,
-                    }}/>
-                    <span style={{fontSize: '10px', color: MUTED}}>
+                <div className="mt-2 flex items-center gap-[6px]">
+                    <div className={`w-[6px] h-[6px] rounded-full shrink-0 ${isHQ ? 'bg-army-gold' : 'bg-army-green'}`}/>
+                    <span className="text-[10px] text-muted">
                         {isHQ ? 'HQ Viewer' : 'PAO Unit'} · {activeUser?.unitName ?? ''}
                     </span>
                 </div>
             </div>
 
             {/* Nav items */}
-            <div style={{padding: '12px 0', flex: 1}}>
-                <div style={{
-                    fontSize: '9px',
-                    color: MUTED,
-                    letterSpacing: '0.12em',
-                    textTransform: 'uppercase',
-                    padding: '0 14px 6px',
-                }}>
+            <div className="py-3 flex-1">
+                <div className="text-[9px] text-muted tracking-[0.12em] uppercase px-[14px] pb-[6px]">
                     {sectionLabel}
                 </div>
-            {/*todo this generates nav links right now but we may want to have a link that just shows or hides a form or something like that*/}
+                {/*todo this generates nav links right now but we may want to have a link that just shows or hides a form or something like that*/}
                 {navItems.map(item => (
-                    <NavLink
-                        key={item.to}
-                        to={item.to}
-                        style={linkStyle}
-                    >
+                    <NavLink key={item.to} to={item.to} className={linkCls}>
                         {item.label}
                     </NavLink>
                 ))}
             </div>
 
             {/* Bottom — app info */}
-            <div style={{
-                padding: '10px 14px',
-                borderTop: `1px solid ${BORDER}`,
-                fontSize: '10px',
-                color: MUTED,
-            }}>
+            <div className="px-[14px] py-[10px] border-t border-ui-border text-[10px] text-muted">
                 PA Reporting · Brigade → Division
             </div>
         </aside>

@@ -1,6 +1,4 @@
 package mil.army.moda.pao_dashboard.theme_example;
-
-import mil.army.moda.pao_dashboard.theme_example.ThemeExampleRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,6 +6,7 @@ import java.util.List;
 @Service
 public class ThemeExampleService {
     private final ThemeExampleRepository themeExampleRepository;
+
     public ThemeExampleService(ThemeExampleRepository themeExampleRepository) {
         this.themeExampleRepository = themeExampleRepository;
     }

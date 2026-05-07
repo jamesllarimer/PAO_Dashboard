@@ -36,18 +36,12 @@ export function Layout({children}: { children: React.ReactNode }) {
             <Meta/>
             <Links/>
         </head>
-        <body style={{
-            backgroundColor: '#221F20',
-            color: '#FFFFFF',
-            margin: 0,
-            minHeight: '100vh',
-            fontFamily: 'Inter, sans-serif',
-        }}>
+        <body className="bg-army-black text-white m-0 min-h-screen font-sans">
         <UserProvider>
             <ThemeProvider>
-                <div style={{display: 'flex', flexDirection: 'column', minHeight: '100vh'}}>
+                <div className="flex flex-col min-h-screen">
                     <NavBar/>
-                    <div style={{display: 'flex', flex: 1}}>
+                    <div className="flex flex-1">
                         <Sidebar/>
                         {children}
                     </div>
@@ -82,17 +76,11 @@ export function ErrorBoundary({error}: Route.ErrorBoundaryProps) {
     }
 
     return (
-        <main style={{padding: '2rem'}}>
-            <h1 style={{color: '#FFCC01'}}>{message}</h1>
-            <p style={{color: '#FFFFFF'}}>{details}</p>
+        <main className="p-8">
+            <h1 className="text-army-gold">{message}</h1>
+            <p className="text-white">{details}</p>
             {stack && (
-                <pre style={{
-                    background: '#2a2728',
-                    padding: '1rem',
-                    overflowX: 'auto',
-                    color: '#FFFFFF',
-                    borderRadius: '4px',
-                }}>
+                <pre className="bg-surface p-4 overflow-x-auto text-white rounded">
                     <code>{stack}</code>
                 </pre>
             )}

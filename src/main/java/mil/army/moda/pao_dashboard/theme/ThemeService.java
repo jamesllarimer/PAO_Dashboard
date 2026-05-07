@@ -20,8 +20,8 @@ public class ThemeService {
         return themeRepository.findById(id).orElseThrow();
     }
 
-    public void deleteTheme(Theme theme) {
-        themeRepository.delete(theme);
+    public void delete(Long id) {
+        themeRepository.deleteById(id);
     }
 
     public Theme updateTheme(Theme theme) {
@@ -31,5 +31,4 @@ public class ThemeService {
     public Theme createTheme(Theme theme) {
         return themeRepository.save(theme);
     }
-
 }

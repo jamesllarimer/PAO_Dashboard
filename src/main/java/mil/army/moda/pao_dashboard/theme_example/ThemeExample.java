@@ -1,5 +1,6 @@
 package mil.army.moda.pao_dashboard.theme_example;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import mil.army.moda.pao_dashboard.theme.Theme;
 
@@ -13,6 +14,7 @@ public class ThemeExample {
     private String description;
     @ManyToOne()
     @JoinColumn(name = "theme_id")
+    @JsonIgnore  // breaks the serialization cycle
     private Theme theme;
 
 
