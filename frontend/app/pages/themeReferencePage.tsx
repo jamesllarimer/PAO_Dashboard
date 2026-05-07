@@ -60,7 +60,7 @@ export default function ThemeReferencePage() {
                             id={theme.id}
                             name={theme.name}
                             examples={theme.theme_examples}
-                            onDelete={() => handleThemeDeleted}
+                            onDelete={() => handleThemeDeleted(theme.id)}
                         />
                     ))}
                 </div>

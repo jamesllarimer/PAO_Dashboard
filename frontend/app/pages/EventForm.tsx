@@ -6,11 +6,6 @@ import {useUserContext} from "~/context/UserProfileContext";
 import {useEffect, useState} from "react";
 import type {EventRequest, EventStatus, EventType, PostingLocation, Theme} from "~/types";
 
-const ARMY_BLACK = '#221F20';
-const ARMY_GOLD = '#FFCC01';
-const BORDER = '#3f3b3c';
-const MUTED = '#9a9496';
-
 const validationSchema = Yup.object({
         name: string().required('Event name is required.'),
         description: string().required('Description is required.'),
