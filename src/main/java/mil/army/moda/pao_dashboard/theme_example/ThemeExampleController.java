@@ -7,6 +7,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/theme_example")
+@CrossOrigin(origins = "*")
 public class ThemeExampleController {
     private final ThemeExampleService themeExampleService;
     public ThemeExampleController(ThemeExampleService themeExampleService) {
@@ -16,6 +17,7 @@ public class ThemeExampleController {
     public List<ThemeExample> getAll() {
         return themeExampleService.findAll();
     }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ThemeExample save(@RequestBody ThemeExample themeExample) {

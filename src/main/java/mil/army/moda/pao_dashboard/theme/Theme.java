@@ -11,8 +11,8 @@ public class Theme {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @OneToMany(mappedBy = "id")
-    private List<ThemeExample> theme_examples = new ArrayList<>() ;
+    @OneToMany(mappedBy = "theme", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private List<ThemeExample> theme_examples = new ArrayList<>();
 
     public Theme() {
     }
@@ -44,5 +44,10 @@ public class Theme {
 
     public void setTheme_examples(List<ThemeExample> theme_examples) {
         this.theme_examples = theme_examples;
+        if (theme_examples != null) {
+            for (ThemeExample example : theme_examples) {
+                example.setTheme(this); // sets theme_id on each child row
+            }
+        }
     }
 }
