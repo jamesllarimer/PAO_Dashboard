@@ -1,3 +1,29 @@
 
 @import "tailwindcss";
 @variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-army-black:  #221F20;
+  --color-army-gold:   #FFCC01;
+  --color-surface:     #2a2728;
+  --color-surface-2:   #332f30;
+  --color-surface-3:   #3d3839;
+  --color-ui-border:   #3f3b3c;
+  --color-ui-border-2: #4f4b4c;
+  --color-muted:       #9a9496;
+  --color-army-green:  #6db86d;
+  --color-red-dim:     #e87070;
+  --color-gold-dim:    #b89000;
+  --color-status-blue: #6ab0e8;
+  --font-sans:         'Inter', sans-serif;
+  --font-barlow:       "Barlow Condensed", sans-serif;
+  --font-barlow-sans:  "Barlow", sans-serif;
+}
+
+.select-arrow {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239a9496'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 24px;
+}
