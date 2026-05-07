@@ -40,6 +40,8 @@ export default function HeadquartersDashboard() {
     let commOutreachEvents = events.filter(x => x?.eventType === "Community Outreach").length;
     let cocEvents = events.filter(x => x?.eventType === "Change of Command").length;
     let trainingEvents = events.filter(x => x?.eventType === "Training Exercise").length;
+    let acEvents = events.filter(x => x?.eventType === "Award Ceremony").length;
+    let meEvents = events.filter(x => x?.eventType === "Media Embed").length;
 
     async function getAllEvents() {
         try {
@@ -181,7 +183,7 @@ export default function HeadquartersDashboard() {
                     marginBottom: '20px',
                 }}>
                     {[
-                        {label: 'Total Events', value: events.length, sub: 'All units'},
+                        {label: 'Total Events', value: events.length, sub: 'All types'},
                         {label: 'Submitted', value: submittedEvents, sub: 'Submitted', gold: true},
                         {label: 'Published', value: publishedEvents, sub: 'Published', green: true},
                         {label: 'In Progress', value: inProgressEvents, sub: 'Ongoing Projects'},
@@ -189,6 +191,15 @@ export default function HeadquartersDashboard() {
                         {label: 'Press Conference', value: pressConferences, sub: 'Press Conference'},
                         {label: 'Training Exercise', value: trainingEvents, sub: 'Training Exercise'},
                         {label: 'Change of Command', value: cocEvents, sub: 'Change of Command'},
+                        {label: 'Award Ceremony', value: acEvents, sub: 'Award Ceremony'},
+                        {label: 'Media Embed', value: meEvents, sub: 'Media Embed'},
+                        // Press Conference
+                        // Community Outreach
+                        // Media Embed
+                        // Change of Command
+                        // Award Ceremony
+                        // Training Exercise
+
                     ].map(card => (
                         <div key={card.label} style={{
                             backgroundColor: SURFACE,
