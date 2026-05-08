@@ -92,11 +92,11 @@ export default function EventForm(eventid: number | undefined) {
                 }
             })
             if (!response.ok) {
-                throw new Error(response.statusText);
+                alert(response.statusText);
             }
             return await response.json();
         }catch (error: any) {
-            console.log(error);
+            alert(error);
             return error;
         }
     }
