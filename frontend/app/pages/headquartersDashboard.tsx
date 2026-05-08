@@ -16,11 +16,13 @@ export function meta({}: Route.MetaArgs) {
 export default function HeadquartersDashboard() {
     const [showSubordinateEvents, setShowSubordinateEvents] = useState<boolean>(true);
     const [events, setEvents] = useState<EventResponseDto[]>([]);
-    const [filteredEvents, setFilteredEvents] = useState<EventResponseDto[]>([]);
     const [eventTypes, setEventTypes] = useState<EventType[]>([]);
     const [postingLocations, setPostingLocations] = useState<PostingLocation[]>([]);
     const [eventStatuses, setEventStatuses] = useState<EventStatus[]>([]);
     const [eventThemes, setEventThemes] = useState<Theme[]>([]);
+    const [selectedUnit, setSelectedUnit] = useState<string>("All");
+    const [dateFrom, setDateFrom] = useState<string>("");
+    const [dateTo, setDateTo] = useState<string>("");
     const {activeUser, users} = useUserContext();
 
     let units = [...new Set(events.map(e => e.unit))]
@@ -49,7 +51,6 @@ export default function HeadquartersDashboard() {
             });
             filtered = filtered.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
             setEvents(filtered);
-            setFilteredEvents(filtered);
             for (let event of filtered) {
                 console.log(event);
             }
@@ -58,17 +59,12 @@ export default function HeadquartersDashboard() {
         }
     }
 
-    function filterEvents(selectedUnit: string) {
-        if (selectedUnit === "All") {
-            setFilteredEvents(events);
-            return
-        }
-        let eventsFiltered = events.filter(x => x?.unit === selectedUnit)
-        if (eventsFiltered.length > 0) {
-            setFilteredEvents(eventsFiltered);
-        }
-
-    }
+    const filteredEvents = events.filter((event: EventResponseDto) => {
+        if (selectedUnit !== "All" && event.unit !== selectedUnit) return false;
+        if (dateFrom && (event.startDate?.slice(0, 10) ?? '') < dateFrom) return false;
+        if (dateTo && (event.startDate?.slice(0, 10) ?? '') > dateTo) return false;
+        return true;
+    });
 
     async function handleDeleteEvent(id: number) {
         try {
@@ -78,9 +74,7 @@ export default function HeadquartersDashboard() {
             });
             if (!response.ok) throw new Error(response.statusText);
 
-            // Remove from both state arrays — no page reload needed
             setEvents(prev => prev.filter(e => e.id !== id));
-            setFilteredEvents(prev => prev.filter(e => e.id !== id));
         } catch (error) {
             console.error(error);
         }
@@ -113,7 +107,6 @@ export default function HeadquartersDashboard() {
                 list.map(e => (e.id === saved.id ? saved : e))
 
             setEvents(swap);
-            setFilteredEvents(swap);
         } catch (error) {
             console.error(error);
         }
@@ -194,21 +187,61 @@ export default function HeadquartersDashboard() {
                 {/* Events table card */}
                 {/*todo need filtering and sorting*/}
                 <div className="bg-surface border border-ui-border rounded">
-                    <div className="flex items-center justify-between px-4 py-3 border-b border-ui-border">
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-ui-border flex-wrap gap-3">
                         <span className="text-xs font-semibold text-white uppercase tracking-[0.06em]">
                             Subordinate Events
+                            {(selectedUnit !== "All" || dateFrom || dateTo) && (
+                                <span className="ml-2 text-army-gold normal-case font-normal">
+                                    — {filteredEvents.length} shown
+                                </span>
+                            )}
                         </span>
-                        <div className={"flex items-center gap-1"}>
-                            <label htmlFor="UnitFilter" className="text-sm/6 font-medium text-white">
-                                View By Unit
-                            </label>
+                        <div className="flex items-center gap-3 flex-wrap">
+                            {/* Unit filter */}
+                            <div className="flex items-center gap-1">
+                                <label htmlFor="UnitFilter" className="text-[11px] text-muted uppercase tracking-[0.06em]">
+                                    Unit
+                                </label>
+                                <select
+                                    className="rounded-md bg-white/5 py-1.5 pr-8 pl-3 text-sm text-white outline-1 -outline-offset-1 outline-white/10 *:bg-gray-800 focus:outline-2 focus:-outline-offset-2 focus:outline-yellow-400"
+                                    name="unitFilter" id="UnitFilter"
+                                    value={selectedUnit}
+                                    onChange={(e: {target: {value: string}}) => setSelectedUnit(e.target.value)}
+                                >
+                                    <option value="All">All</option>
+                                    {units.map(unit => (<option key={unit} value={unit}>{unit}</option>))}
+                                </select>
+                            </div>
 
-                            <select className="rounded-md bg-white/5 py-1.5 pr-8 pl-3 text-base text-white outline-1 -outline-offset-1
-                                outline-white/10 *:bg-gray-800 focus:outline-2 focus:-outline-offset-2 focus:outline-yellow-400 sm:text-sm/6"
-                                    name="unitFilter" id="UnitFilter" onChange={e => filterEvents(e.target.value)}>
-                                <option value="All">All</option>
-                                {units.map(unit => (<option value={unit}>{unit}</option>))}
-                            </select>
+                            {/* Date range */}
+                            <div className="flex items-center gap-1">
+                                <label className="text-[11px] text-muted uppercase tracking-[0.06em]">From</label>
+                                <input
+                                    type="date"
+                                    value={dateFrom}
+                                    onChange={(e: {target: {value: string}}) => setDateFrom(e.target.value)}
+                                    className="bg-white/5 border border-white/10 text-white text-sm rounded-md py-1.5 px-2 outline-none focus:outline-2 focus:-outline-offset-2 focus:outline-yellow-400 [color-scheme:dark]"
+                                />
+                            </div>
+                            <div className="flex items-center gap-1">
+                                <label className="text-[11px] text-muted uppercase tracking-[0.06em]">To</label>
+                                <input
+                                    type="date"
+                                    value={dateTo}
+                                    onChange={(e: {target: {value: string}}) => setDateTo(e.target.value)}
+                                    className="bg-white/5 border border-white/10 text-white text-sm rounded-md py-1.5 px-2 outline-none focus:outline-2 focus:-outline-offset-2 focus:outline-yellow-400 [color-scheme:dark]"
+                                />
+                            </div>
+
+                            {/* Clear filters */}
+                            {(selectedUnit !== "All" || dateFrom || dateTo) && (
+                                <button
+                                    onClick={() => { setSelectedUnit("All"); setDateFrom(""); setDateTo(""); }}
+                                    className="text-[11px] text-muted hover:text-white uppercase tracking-[0.06em] cursor-pointer bg-transparent border-none transition-colors duration-150"
+                                >
+                                    Clear
+                                </button>
+                            )}
                         </div>
                     </div>
 
