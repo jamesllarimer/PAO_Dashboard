@@ -51,9 +51,9 @@ export default function ThemeCard({id, name, examples, onDelete}: ThemeCardProps
 
             {/* Examples list */}
             <div className="p-3">
+                <p className="text-xs text-stone-400 uppercase tracking-widest mb-1">Theme Examples</p>
                 {examples.map((example) => (
-                    <div key={example.id}>
-                        <p className="text-xs text-stone-400 uppercase tracking-widest mb-1">Theme Examples</p>
+                    <div key={example.id} className="p-3">
                         <div className="gap-3 bg-stone-800 border border-stone-700 px-3 py-2">
                             <p className="text-xs font-bold text-yellow-400 mt-0.5">
                                 {example.name}

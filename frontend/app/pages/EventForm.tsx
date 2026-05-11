@@ -4,7 +4,7 @@ import {date, number, string} from "yup";
 import {yupResolver} from "@hookform/resolvers/yup/src";
 import {useUserContext} from "~/context/UserProfileContext";
 import {useEffect, useState} from "react";
-import type {EventRequest, EventStatus, EventType, PostingLocation, Theme} from "~/types";
+import type {EventRequest, EventStatus, EventType, PostingLocation, Theme, ProductType} from "~/types";
 
 const validationSchema = Yup.object({
         name: string().required('Event name is required.'),
@@ -14,6 +14,7 @@ const validationSchema = Yup.object({
         leadId: number().optional(),
         eventStatusId: number().optional(),
         eventTypeId: number().optional(),
+        productTypeId: number().optional(),
         postingLocationId: number().optional(),
         eventThemeId: number().optional(),
     }
@@ -25,7 +26,9 @@ export default function EventForm(eventid: number | undefined) {
     const [postingLocations, setPostingLocations] = useState<PostingLocation[]>([]);
     const [eventStatuses, setEventStatuses] = useState<EventStatus[]>([]);
     const [eventThemes, setEventThemes] = useState<Theme[]>([])
+    const [productTypes, setProductTypes] = useState<ProductType[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
+
     async function getPostingLocations(): Promise<PostingLocation[]> {
         try {
             const url = 'http://localhost:8080/api/v1/posting_locations'
@@ -39,7 +42,7 @@ export default function EventForm(eventid: number | undefined) {
                 throw new Error(response.statusText);
             }
             return await response.json();
-        }catch (error: any) {
+        } catch (error: any) {
             console.log(error);
             return error;
         }
@@ -58,7 +61,7 @@ export default function EventForm(eventid: number | undefined) {
                 throw new Error(response.statusText);
             }
             return await response.json();
-        }catch (error: any) {
+        } catch (error: any) {
             console.log(error);
             return error;
         }
@@ -77,11 +80,12 @@ export default function EventForm(eventid: number | undefined) {
                 throw new Error(response.statusText);
             }
             return await response.json();
-        }catch (error: any) {
+        } catch (error: any) {
             console.log(error);
             return error;
         }
     }
+
     async function getEventThemes(): Promise<Theme[]> {
         try {
             const url = 'http://localhost:8080/api/v1/theme'
@@ -95,11 +99,31 @@ export default function EventForm(eventid: number | undefined) {
                 alert(response.statusText);
             }
             return await response.json();
-        }catch (error: any) {
+        } catch (error: any) {
             alert(error);
             return error;
         }
     }
+
+    async function getProductTypes(): Promise<ProductType[]> {
+        try {
+            const url = 'http://localhost:8080/api/v1/product_type'
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            })
+            if (!response.ok) {
+                alert(response.statusText);
+            }
+            return await response.json();
+        } catch (error: any) {
+            alert(error);
+            return error;
+        }
+    }
+
     const onSubmit = async (data: EventRequest) => {
         setLoading(true);
         try {
@@ -119,7 +143,7 @@ export default function EventForm(eventid: number | undefined) {
             setLoading(false);
             reset()
 
-        }catch (error: any) {
+        } catch (error: any) {
             console.log(error);
             setLoading(false);
             return error;
@@ -135,12 +159,14 @@ export default function EventForm(eventid: number | undefined) {
         mode: "onBlur",
         resolver: yupResolver(validationSchema)
     });
-function getDataForDropdowns(){
-    getEventTypes().then((types: EventType[]): void => setEventTypes(types));
-    getPostingLocations().then((locations: PostingLocation[]): void => setPostingLocations(locations));
-    getEventStatuses().then((eventStatuses: EventStatus[]): void => setEventStatuses(eventStatuses));
-    getEventThemes().then((themes: Theme[]): void => setEventThemes(themes));
-}
+
+    function getDataForDropdowns() {
+        getEventTypes().then((types: EventType[]): void => setEventTypes(types));
+        getPostingLocations().then((locations: PostingLocation[]): void => setPostingLocations(locations));
+        getEventStatuses().then((eventStatuses: EventStatus[]): void => setEventStatuses(eventStatuses));
+        getEventThemes().then((themes: Theme[]): void => setEventThemes(themes));
+        getProductTypes().then((types: ProductType[]): void => setProductTypes(types));
+    }
 
     useEffect(() => {
         getDataForDropdowns();
@@ -148,27 +174,28 @@ function getDataForDropdowns(){
 
     return (
         <div className="w-1/2 mx-auto mt-2">
-            <form onSubmit={handleSubmit(data => onSubmit(data))} method="post" className={"p-5 border border-yellow-500"}>
+            <form onSubmit={handleSubmit(data => onSubmit(data))} method="post"
+                  className={"p-5 border border-yellow-500"}>
                 <div className={"space-y-12"}>
-                        <h2 className="text-base/7 font-semibold text-white">Create a new event</h2>
-                        <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                            <div className="sm:col-span-4">
-                                <label htmlFor="Name" className={"block text-sm/6 font-medium text-white"}>Event
-                                    Name</label>
-                                <div className="mt-2">
-                                    <div
-                                        className="flex items-center rounded-md bg-white/5 pl-3 outline-1 -outline-offset-1 outline-white/10 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-500">
-                                        <input type="text" id="Name" placeholder="Enter Event Name"
-                                               className="block min-w-0 grow bg-transparent py-1.5 pr-3 pl-1 text-base text-white placeholder:text-gray-500 focus:outline-none sm:text-sm/6" {...register('name')} />
-                                    </div>
-                                    {errors.name && (
-                                        <p className="mt-1 text-sm text-red-500">
-                                            {errors.name.message}
-                                        </p>
-                                    )}
+                    <h2 className="text-base/7 font-semibold text-white">Create a new event</h2>
+                    <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                        <div className="sm:col-span-4">
+                            <label htmlFor="Name" className={"block text-sm/6 font-medium text-white"}>Event
+                                Name</label>
+                            <div className="mt-2">
+                                <div
+                                    className="flex items-center rounded-md bg-white/5 pl-3 outline-1 -outline-offset-1 outline-white/10 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-500">
+                                    <input type="text" id="Name" placeholder="Enter Event Name"
+                                           className="block min-w-0 grow bg-transparent py-1.5 pr-3 pl-1 text-base text-white placeholder:text-gray-500 focus:outline-none sm:text-sm/6" {...register('name')} />
                                 </div>
+                                {errors.name && (
+                                    <p className="mt-1 text-sm text-red-500">
+                                        {errors.name.message}
+                                    </p>
+                                )}
                             </div>
                         </div>
+                    </div>
                     <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         <div className="sm:col-span-4">
                             <label htmlFor="Description"
@@ -270,6 +297,29 @@ function getDataForDropdowns(){
                         </div>
                     </div>
                     <div className="sm:col-span-3">
+                        <label htmlFor="EventType" className="block text-sm/6 font-medium text-white">
+                            Product Type
+                        </label>
+                        <div className="mt-2 grid grid-cols-1">
+                            <select
+                                id="EventType"
+                                className="col-start-1 row-start-1 w-full  rounded-md bg-white/5 py-1.5 pr-8 pl-3 text-base text-white outline-1 -outline-offset-1
+                                outline-white/10 *:bg-gray-800 focus:outline-2 focus:-outline-offset-2 focus:outline-yellow-400 sm:text-sm/6"
+                                {...register('productTypeId')}
+                            >
+                                {productTypes?.map((productType: ProductType) => (
+                                    <option key={productType.id}
+                                            value={productType.id}>{productType.name}</option>
+                                ))}
+                            </select>
+                            {errors.eventTypeId && (
+                                <p className="mt-1 text-sm text-red-500">
+                                    {errors.eventTypeId.message}
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                    <div className="sm:col-span-3">
                         <label htmlFor="PostingLocation" className="block text-sm/6 font-medium text-white">
                             Posting Location
                         </label>
@@ -340,20 +390,22 @@ function getDataForDropdowns(){
                     <button type="button" className="text-sm/6 font-semibold text-white">
                         Cancel
                     </button>
-                    { !loading ?
-                    <button
-                        type="submit"
-                        className="rounded-md bg-amber-400 px-3 py-2 text-sm font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500"
-                    >
-                        Save
-                    </button> :
-                    <button type="button" className="rounded-md bg-amber-400 px-4 py-2 text-sm font-semibold text-white" disabled>
-                        <svg className="mr-3 size-4 animate-spin -ml-1 h-5 w-5 text-white" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="12" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4z"></path>
-                        </svg>
-                        Saving…
-                    </button>}
+                    {!loading ?
+                        <button
+                            type="submit"
+                            className="rounded-md bg-amber-400 px-3 py-2 text-sm font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500"
+                        >
+                            Save
+                        </button> :
+                        <button type="button"
+                                className="rounded-md bg-amber-400 px-4 py-2 text-sm font-semibold text-white" disabled>
+                            <svg className="mr-3 size-4 animate-spin -ml-1 h-5 w-5 text-white" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="12" stroke="currentColor"
+                                        strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4z"></path>
+                            </svg>
+                            Saving…
+                        </button>}
                 </div>
             </form>
         </div>

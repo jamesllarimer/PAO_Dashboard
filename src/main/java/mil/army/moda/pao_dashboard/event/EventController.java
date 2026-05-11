@@ -27,6 +27,11 @@ public class EventController {
         return ResponseEntity.ok(eventService.findById(id));
     }
 
+    @GetMapping("/userId/{userId}")
+    public ResponseEntity<List<EventResponseDto>> getByUserId(@PathVariable Long userId) {
+        return  ResponseEntity.ok(eventService.findAllByUserId(userId));
+    }
+
     @PostMapping
     public ResponseEntity<Event> create(@RequestBody EventRequest event) {
         return ResponseEntity.status(HttpStatus.CREATED).body(eventService.create(event));

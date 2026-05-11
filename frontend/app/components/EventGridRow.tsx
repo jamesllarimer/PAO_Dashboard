@@ -1,6 +1,15 @@
-import type {EventRequest, EventResponseDto, EventStatus, EventType, PostingLocation, Theme, User} from "~/types";
+import type {
+    EventRequest,
+    EventResponseDto,
+    EventStatus,
+    EventType,
+    PostingLocation,
+    ProductType,
+    Theme,
+    User
+} from "~/types";
 import MetaChip from "~/components/MetaChip";
-import React, { useState } from "react";
+import React, {useState} from "react";
 
 
 type GridRowProps = {
@@ -8,6 +17,7 @@ type GridRowProps = {
     // Dropdown lists — fetched once by the parent, passed down to every row
     users: User[];
     eventTypes: EventType[];
+    productTypes: ProductType[];
     postingLocations: PostingLocation[];
     eventStatuses: EventStatus[];
     eventThemes: Theme[];
@@ -19,9 +29,9 @@ type EditDraft = EventRequest & { id: number };
 
 const INPUT_CLS = "bg-[#1a1718] border border-ui-border-2 text-white py-[5px] px-2 text-xs rounded-[3px] outline-none w-full box-border";
 const SELECT_CLS = `${INPUT_CLS} cursor-pointer select-arrow`;
-const BTN_BASE   = "py-[3px] px-[10px] text-[11px] font-semibold rounded-[3px] cursor-pointer tracking-[0.04em] uppercase whitespace-nowrap border";
+const BTN_BASE = "py-[3px] px-[10px] text-[11px] font-semibold rounded-[3px] cursor-pointer tracking-[0.04em] uppercase whitespace-nowrap border";
 
-function FieldLabel({ children }: { children: React.ReactNode }) {
+function FieldLabel({children}: { children: React.ReactNode }) {
     return (
         <label className="block text-[10px] text-muted uppercase tracking-[0.07em] mb-1 font-semibold">
             {children}
@@ -31,23 +41,23 @@ function FieldLabel({ children }: { children: React.ReactNode }) {
 
 // ─── StatusBadge ─────────────────────────────────────────────────────────────
 
-function StatusBadge({ status }: { status: string }) {
+function StatusBadge({status}: { status: string }) {
     const styles: Record<string, { bg: string; color: string; border: string }> = {
-        PLANNING:     { bg: '#2a2728', color: '#9a9496', border: '#3f3b3c' },
-        SCHEDULED:    { bg: '#3a3000', color: '#FFCC01', border: '#5a4a00' },
-        IN_PROGRESS:  { bg: '#1a2a3a', color: '#6ab0e8', border: '#2a4a6a' },
-        UNDER_REVIEW: { bg: '#1a2a3a', color: '#6ab0e8', border: '#2a4a6a' },
-        COMPLETED:    { bg: '#1a2a1a', color: '#6db86d', border: '#2a4a2a' },
-        CANCELLED:    { bg: '#3a1a1a', color: '#e87070', border: '#5a2a2a' },
-        PUBLISHED:    { bg: '#1a2a1a', color: '#6db86d', border: '#2a4a2a' },
-        SUBMITTED:    { bg: '#3a3000', color: '#FFCC01', border: '#5a4a00' },
+        PLANNING: {bg: '#2a2728', color: '#9a9496', border: '#3f3b3c'},
+        SCHEDULED: {bg: '#3a3000', color: '#FFCC01', border: '#5a4a00'},
+        IN_PROGRESS: {bg: '#1a2a3a', color: '#6ab0e8', border: '#2a4a6a'},
+        UNDER_REVIEW: {bg: '#1a2a3a', color: '#6ab0e8', border: '#2a4a6a'},
+        COMPLETED: {bg: '#1a2a1a', color: '#6db86d', border: '#2a4a2a'},
+        CANCELLED: {bg: '#3a1a1a', color: '#e87070', border: '#5a2a2a'},
+        PUBLISHED: {bg: '#1a2a1a', color: '#6db86d', border: '#2a4a2a'},
+        SUBMITTED: {bg: '#3a3000', color: '#FFCC01', border: '#5a4a00'},
     };
     const key = status?.toUpperCase().replace(/\s+/g, '_') ?? 'PLANNING';
     const s = styles[key] ?? styles.PLANNING;
     return (
         <span
             className="inline-block py-[2px] px-2 rounded-[2px] text-[10px] font-semibold uppercase tracking-[0.05em] whitespace-nowrap"
-            style={{ backgroundColor: s.bg, color: s.color, border: `1px solid ${s.border}` }}
+            style={{backgroundColor: s.bg, color: s.color, border: `1px solid ${s.border}`}}
         >
             {status ?? 'Unknown'}
         </span>
@@ -66,6 +76,7 @@ export default function EventGridRow({
                                          event,
                                          users,
                                          eventTypes,
+                                         productTypes,
                                          postingLocations,
                                          eventStatuses,
                                          eventThemes,
@@ -74,20 +85,21 @@ export default function EventGridRow({
                                      }: GridRowProps) {
     const [isEditing, setIsEditing] = useState(false);
     const [draft, setDraft] = useState<EditDraft>({
-        id:                event.id,
-        name:              event.name,
-        description:       event.description ?? '',
-        eventTypeId:       event.eventTypeId,
-        leadId:            event.leadId,
-        eventStatusId:     event.eventStatusId,
+        id: event.id,
+        name: event.name,
+        description: event.description ?? '',
+        eventTypeId: event.eventTypeId,
+        productTypeId: event.productTypeId,
+        leadId: event.leadId,
+        eventStatusId: event.eventStatusId,
         postingLocationId: event.postingLocationId,
-        eventThemeId:      event.eventThemeId,
-        startDate:         event.startDate?.slice(0, 10) ?? '',
-        endDate:           event.endDate?.slice(0, 10) ?? '',
+        eventThemeId: event.eventThemeId,
+        startDate: event.startDate?.slice(0, 10) ?? '',
+        endDate: event.endDate?.slice(0, 10) ?? '',
     });
 
     function set(field: keyof EditDraft, value: string | number) {
-        setDraft(prev => ({ ...prev, [field]: value }));
+        setDraft(prev => ({...prev, [field]: value}));
     }
 
     function handleSave() {
@@ -97,16 +109,17 @@ export default function EventGridRow({
 
     function handleCancel() {
         setDraft({
-            id:                event.id,
-            name:              event.name,
-            description:       event.description ?? '',
-            eventTypeId:       event.eventTypeId,
-            leadId:            event.leadId,
-            eventStatusId:     event.eventStatusId,
+            id: event.id,
+            name: event.name,
+            description: event.description ?? '',
+            eventTypeId: event.eventTypeId,
+            productTypeId: event.productTypeId,
+            leadId: event.leadId,
+            eventStatusId: event.eventStatusId,
             postingLocationId: event.postingLocationId,
-            eventThemeId:      event.eventThemeId,
-            startDate:         event.startDate?.slice(0, 10) ?? '',
-            endDate:           event.endDate?.slice(0, 10) ?? '',
+            eventThemeId: event.eventThemeId,
+            startDate: event.startDate?.slice(0, 10) ?? '',
+            endDate: event.endDate?.slice(0, 10) ?? '',
         });
         setIsEditing(false);
     }
@@ -122,7 +135,8 @@ export default function EventGridRow({
             isEditing ? 'border-army-gold' : 'border-ui-border hover:border-ui-border-2'
         }`}>
             {/* ── Header ──────────────────────────────────────────────────── */}
-            <div className="flex items-center justify-between py-3 px-4 border-b border-ui-border bg-surface-2 gap-3 flex-wrap">
+            <div
+                className="flex items-center justify-between py-3 px-4 border-b border-ui-border bg-surface-2 gap-3 flex-wrap">
                 {/* Name + badges */}
                 <div className="flex items-center gap-[10px] min-w-0 flex-1">
                     {isEditing ? (
@@ -133,17 +147,20 @@ export default function EventGridRow({
                             placeholder="Event name"
                         />
                     ) : (
-                        <span className="text-sm font-semibold text-army-gold overflow-hidden text-ellipsis whitespace-nowrap">
+                        <span
+                            className="text-sm font-semibold text-army-gold overflow-hidden text-ellipsis whitespace-nowrap">
                             {event.name}
                         </span>
                     )}
                     {!isEditing && event.theme && (
-                        <span className="py-[2px] px-2 bg-surface-3 text-white border border-army-gold rounded-[2px] text-[10px] font-semibold uppercase tracking-[0.05em] whitespace-nowrap shrink-0">
+                        <span
+                            className="py-[2px] px-2 bg-surface-3 text-white border border-army-gold rounded-[2px] text-[10px] font-semibold uppercase tracking-[0.05em] whitespace-nowrap shrink-0">
                             {event.theme}
                         </span>
                     )}
                     {!isEditing && event.eventType && (
-                        <span className="py-[2px] px-2 bg-surface-3 text-white border border-ui-border-2 rounded-[2px] text-[10px] font-semibold uppercase tracking-[0.05em] whitespace-nowrap shrink-0">
+                        <span
+                            className="py-[2px] px-2 bg-surface-3 text-white border border-ui-border-2 rounded-[2px] text-[10px] font-semibold uppercase tracking-[0.05em] whitespace-nowrap shrink-0">
                             {event.eventType}
                         </span>
                     )}
@@ -151,16 +168,24 @@ export default function EventGridRow({
 
                 {/* Status + action buttons */}
                 <div className="flex items-center gap-2 shrink-0">
-                    <StatusBadge status={event.status ?? 'Planning'} />
+                    <StatusBadge status={event.status ?? 'Planning'}/>
                     {isEditing ? (
                         <>
-                            <button className={`${BTN_BASE} text-army-green bg-[#1a2a1a] border-[#2a4a2a]`} onClick={handleSave}>Save</button>
-                            <button className={`${BTN_BASE} text-muted bg-surface border-ui-border`} onClick={handleCancel}>Cancel</button>
+                            <button className={`${BTN_BASE} text-army-green bg-[#1a2a1a] border-[#2a4a2a]`}
+                                    onClick={handleSave}>Save
+                            </button>
+                            <button className={`${BTN_BASE} text-muted bg-surface border-ui-border`}
+                                    onClick={handleCancel}>Cancel
+                            </button>
                         </>
                     ) : (
                         <>
-                            <button className={`${BTN_BASE} text-army-gold bg-surface-2 border-army-gold`} onClick={() => setIsEditing(true)}>Edit</button>
-                            <button className={`${BTN_BASE} text-red-dim bg-[#3a1a1a] border-[#5a2a2a]`} onClick={() => onDelete(event.id)}>Delete</button>
+                            <button className={`${BTN_BASE} text-army-gold bg-surface-2 border-army-gold`}
+                                    onClick={() => setIsEditing(true)}>Edit
+                            </button>
+                            <button className={`${BTN_BASE} text-red-dim bg-[#3a1a1a] border-[#5a2a2a]`}
+                                    onClick={() => onDelete(event.id)}>Delete
+                            </button>
                         </>
                     )}
                 </div>
@@ -237,6 +262,21 @@ export default function EventGridRow({
                             </select>
                         </div>
 
+                        {/* Product Type */}
+                        <div>
+                            <FieldLabel>Product Type</FieldLabel>
+                            <select
+                                className={SELECT_CLS}
+                                value={String(draft.productTypeId ?? '')}
+                                onChange={e => set('productTypeId', Number(e.target.value))}
+                            >
+                                <option value="">— Select type —</option>
+                                {productTypes.map(t => (
+                                    <option key={t.id} value={t.id}>{t.name}</option>
+                                ))}
+                            </select>
+                        </div>
+
                         {/* Posting Location */}
                         <div>
                             <FieldLabel>Posting Location</FieldLabel>
@@ -295,11 +335,11 @@ export default function EventGridRow({
                             className={`grid gap-3 ${event.description ? 'pt-3 border-t border-ui-border' : ''}`}
                             style={{gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))'}}
                         >
-                            <MetaChip label="Lead"             value={leadLabel} />
-                            <MetaChip label="Unit"             value={event.unit ?? '—'} />
-                            <MetaChip label="Posting Location" value={event.postingLocation ?? '—'} />
-                            <MetaChip label="Start date"       value={formatDate(event.startDate)} />
-                            <MetaChip label="End date"         value={formatDate(event.endDate)} />
+                            <MetaChip label="Lead" value={leadLabel}/>
+                            <MetaChip label="Unit" value={event.unit ?? '—'}/>
+                            <MetaChip label="Posting Location" value={event.postingLocation ?? '—'}/>
+                            <MetaChip label="Start date" value={formatDate(event.startDate)}/>
+                            <MetaChip label="End date" value={formatDate(event.endDate)}/>
                         </div>
                     </>
                 )}

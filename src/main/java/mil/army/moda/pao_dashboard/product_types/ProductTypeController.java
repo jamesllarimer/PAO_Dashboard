@@ -7,6 +7,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/product_type")
+@CrossOrigin("*")
 public class ProductTypeController {
     private final ProductTypeService productTypeService;
     public ProductTypeController(ProductTypeService productTypeService) {

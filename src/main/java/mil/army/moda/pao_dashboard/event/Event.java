@@ -12,7 +12,7 @@ import java.util.Date;
 @Entity
 public class Event {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String description;

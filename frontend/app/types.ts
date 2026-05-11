@@ -16,6 +16,8 @@ export type EventResponseDto = {
     eventThemeId: number;
     postingLocation: string;
     postingLocationId: number;
+    productType: string;
+    productTypeId: number;
 };
 
 export type Theme = {
@@ -81,6 +83,7 @@ export type EventRequest = {
     name: string;
     description: string;
     eventTypeId: number;
+    productTypeId: number;
     leadId: number;
     eventStatusId: number;
     postingLocationId: number;
@@ -96,5 +99,10 @@ export type ThemeExample = {
 export type ThemeCardProps = {
     name: string;
     examples: ThemeExample[]
+}
+export type ProductType = {
+    id: number;
+    name: string;
+    description: string;
 }
 

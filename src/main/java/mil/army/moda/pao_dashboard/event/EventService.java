@@ -63,7 +63,28 @@ public class EventService {
         return eventRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Event not found with id: " + id));
     }
-
+    public List<EventResponseDto> findAllByUserId(Long userId) {
+        return eventRepository.findAllByLeadId(userId).stream()
+                .map(e -> new EventResponseDto(
+                        e.getId(),
+                        e.getName(),
+                        e.getDescription(),
+                        e.getEvent_type().getName(),
+                        e.getEvent_type().getId(),
+                        e.getStart_date(),
+                        e.getEnd_date(),
+                        e.getLead().getRank().getAbbreviation() + " " + e.getLead().getLastName(),
+                        e.getLead().getId(),
+                        e.getLead().getUnit().getName(),
+                        e.getLead().getUnit().getId(),
+                        e.getEventStatus().getName(),
+                        e.getEventStatus().getId(),
+                        e.getTheme().getName(),
+                        e.getTheme().getId(),
+                        e.getPostingLocation().getName(),
+                        e.getPostingLocation().getId()
+                )).toList();
+    }
     public Event create(EventRequest request) {
         Event event = new Event();
 

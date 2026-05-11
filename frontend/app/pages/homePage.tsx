@@ -86,7 +86,7 @@ export default function HomePage() {
         if (activeUser.role === "HQ_VIEWER") {
             navigate("/hq/dashboard");
         } else {
-            navigate("/pao/dashboard");
+            navigate(`/pao/dashboard/${activeUser.id}`);
         }
     }
 

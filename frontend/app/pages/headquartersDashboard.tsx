@@ -1,7 +1,16 @@
 import type {Route} from "./+types/headquartersDashboard";
 import {useEffect, useState} from "react";
 import ThemeForm from "../components/ThemeForm";
-import type {EventRequest, EventResponseDto, EventStatus, EventType, PostingLocation, Theme, User} from "~/types";
+import type {
+    EventRequest,
+    EventResponseDto,
+    EventStatus,
+    EventType,
+    PostingLocation,
+    ProductType,
+    Theme,
+    User
+} from "~/types";
 import EventGridRow from "~/components/EventGridRow";
 import {useUserContext} from "~/context/UserProfileContext";
 
@@ -17,6 +26,7 @@ export default function HeadquartersDashboard() {
     const [showSubordinateEvents, setShowSubordinateEvents] = useState<boolean>(true);
     const [events, setEvents] = useState<EventResponseDto[]>([]);
     const [eventTypes, setEventTypes] = useState<EventType[]>([]);
+    const [productTypes, setProductTypes] = useState<ProductType[]>([]);
     const [postingLocations, setPostingLocations] = useState<PostingLocation[]>([]);
     const [eventStatuses, setEventStatuses] = useState<EventStatus[]>([]);
     const [eventThemes, setEventThemes] = useState<Theme[]>([]);
@@ -26,15 +36,13 @@ export default function HeadquartersDashboard() {
     const {activeUser, users} = useUserContext();
 
     let units = [...new Set(events.map(e => e.unit))]
+
+    //todo dynamicaly get these numbers and generate stat cards
     let submittedEvents = events.filter(x => x?.status === "Submitted").length;
     let publishedEvents = events.filter(x => x?.status === "Published").length;
     let inProgressEvents = events.filter(x => x?.status === "In Progress").length;
-    let pressConferences = events.filter(x => x?.eventType === "Press Conference").length;
-    let commOutreachEvents = events.filter(x => x?.eventType === "Community Outreach").length;
-    let cocEvents = events.filter(x => x?.eventType === "Change of Command").length;
-    let trainingEvents = events.filter(x => x?.eventType === "Training Exercise").length;
-    let acEvents = events.filter(x => x?.eventType === "Award Ceremony").length;
-    let meEvents = events.filter(x => x?.eventType === "Media Embed").length;
+    let underReviewEvents = events.filter(x => x?.status === "Under Review").length;
+
 
     async function getAllEvents() {
         try {
@@ -113,16 +121,18 @@ export default function HeadquartersDashboard() {
     }
 
     async function getDropdownData() {
-        const [types, locations, statuses, themes] = await Promise.all([
+        const [types, locations, statuses, themes, productTypes] = await Promise.all([
             fetch('http://localhost:8080/api/v1/event_type').then(r => r.json()),
             fetch('http://localhost:8080/api/v1/posting_locations').then(r => r.json()),
             fetch('http://localhost:8080/api/v1/event_status').then(r => r.json()),
             fetch('http://localhost:8080/api/v1/theme').then(r => r.json()),
+            fetch('http://localhost:8080/api/v1/product_type').then(r => r.json()),
         ]);
         setEventTypes(types);
         setPostingLocations(locations);
         setEventStatuses(statuses);
         setEventThemes(themes);
+        setProductTypes(productTypes);
     }
 
     useEffect(() => {
@@ -155,19 +165,7 @@ export default function HeadquartersDashboard() {
                         {label: 'Total Events', value: events.length, sub: 'All types'},
                         {label: 'Submitted', value: submittedEvents, sub: 'Submitted', gold: true},
                         {label: 'Published', value: publishedEvents, sub: 'Published', green: true},
-                        {label: 'In Progress', value: inProgressEvents, sub: 'Ongoing Projects'},
-                        {label: 'Community Outreach', value: commOutreachEvents, sub: 'Community Outreach'},
-                        {label: 'Press Conference', value: pressConferences, sub: 'Press Conference'},
-                        {label: 'Training Exercise', value: trainingEvents, sub: 'Training Exercise'},
-                        {label: 'Change of Command', value: cocEvents, sub: 'Change of Command'},
-                        {label: 'Award Ceremony', value: acEvents, sub: 'Award Ceremony'},
-                        {label: 'Media Embed', value: meEvents, sub: 'Media Embed'},
-                        // Press Conference
-                        // Community Outreach
-                        // Media Embed
-                        // Change of Command
-                        // Award Ceremony
-                        // Training Exercise
+                        {label: 'Under Review', value: underReviewEvents, sub: 'Under Review', gold: true},
 
                     ].map(card => (
                         <div key={card.label} className="bg-surface border border-ui-border rounded p-[14px]">
@@ -185,7 +183,7 @@ export default function HeadquartersDashboard() {
                 </div>
 
                 {/* Events table card */}
-                {/*todo need filtering and sorting*/}
+
                 <div className="bg-surface border border-ui-border rounded">
                     <div className="flex items-center justify-between px-4 py-3 border-b border-ui-border flex-wrap gap-3">
                         <span className="text-xs font-semibold text-white uppercase tracking-[0.06em]">
@@ -258,6 +256,7 @@ export default function HeadquartersDashboard() {
                                         event={event}
                                         users={users ?? []}
                                         eventTypes={eventTypes}
+                                        productTypes={productTypes}
                                         postingLocations={postingLocations}
                                         eventStatuses={eventStatuses}
                                         eventThemes={eventThemes}

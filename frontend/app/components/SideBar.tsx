@@ -1,20 +1,20 @@
 import {NavLink} from "react-router";
 import {useUserContext} from "~/context/UserProfileContext";
 
-const PAO_NAV = [
-    {to: '/pao/events/new', label: 'New Event'},
-    {to: '/hq/dashboard',   label: 'My Events'},
-    {to: '/pao/themes',     label: 'Themes'},
-];
 
-const HQ_NAV = [
-    {to: '/hq/dashboard', label: 'All Events'},
-    {to: '/pao/themes',   label: 'Themes'},
-];
+
 
 export default function Sidebar() {
     const {activeUser, users, setActiveUser} = useUserContext();
-
+    const PAO_NAV = [
+        {to: '/pao/events/new', label: 'New Event'},
+        {to: `/pao/dashboard/${activeUser?.id}`,   label: 'My Events'},
+        {to: '/pao/themes',     label: 'Themes'},
+    ];
+    const HQ_NAV = [
+        {to: '/hq/dashboard', label: 'All Events'},
+        {to: '/pao/themes',   label: 'Themes'},
+    ];
     const isHQ       = activeUser?.role === 'HQ_VIEWER';
     const navItems   = isHQ ? HQ_NAV : PAO_NAV;
     const sectionLabel = isHQ ? 'HQ Admin' : 'PAO Unit';
