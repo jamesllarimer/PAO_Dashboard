@@ -338,6 +338,7 @@ export default function EventGridRow({
                             <MetaChip label="Lead" value={leadLabel}/>
                             <MetaChip label="Unit" value={event.unit ?? '—'}/>
                             <MetaChip label="Posting Location" value={event.postingLocation ?? '—'}/>
+                            <MetaChip label={"Product Type"} value={event.productType}/>
                             <MetaChip label="Start date" value={formatDate(event.startDate)}/>
                             <MetaChip label="End date" value={formatDate(event.endDate)}/>
                         </div>

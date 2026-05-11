@@ -19,5 +19,7 @@ public record EventResponseDto(
     String theme,
     Long eventThemeId,
     String postingLocation,
-    Long postingLocationId
+    Long postingLocationId,
+    String productType,
+    Long productTypeId
 ){}

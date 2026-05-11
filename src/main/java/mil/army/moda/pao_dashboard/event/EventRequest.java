@@ -12,13 +12,14 @@ public class EventRequest {
     private Long eventStatusId;
     private Long eventThemeId;
     private Long postingLocationId;
+    private Long productTypeId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date startDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date endDate;
 
 
-    public EventRequest(String name, String description, Long eventTypeId, Long leadId, Long eventStatusId, Long eventThemeId, Date startDate, Date endDate, Long postingLocationId) {
+    public EventRequest(String name, String description, Long eventTypeId, Long leadId, Long eventStatusId, Long eventThemeId, Date startDate, Date endDate, Long postingLocationId, Long productTypeId) {
         this.name = name;
         this.description = description;
         this.eventTypeId = eventTypeId;
@@ -28,6 +29,7 @@ public class EventRequest {
         this.startDate = startDate;
         this.endDate = endDate;
         this.postingLocationId = postingLocationId;
+        this.productTypeId = productTypeId;
     }
 
     public String getName() {
@@ -98,5 +100,13 @@ public class EventRequest {
 
     public void setPostingLocationId(Long postingLocationId) {
         this.postingLocationId = postingLocationId;
+    }
+
+    public Long getProductTypeId() {
+        return productTypeId;
+    }
+
+    public void setProductTypeId(Long productTypeId) {
+        this.productTypeId = productTypeId;
     }
 }

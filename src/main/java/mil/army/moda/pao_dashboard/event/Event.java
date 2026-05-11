@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import mil.army.moda.pao_dashboard.event_status.EventStatus;
 import mil.army.moda.pao_dashboard.event_type.EventType;
 import mil.army.moda.pao_dashboard.posting_location.PostingLocation;
+import mil.army.moda.pao_dashboard.product_types.ProductType;
 import mil.army.moda.pao_dashboard.theme.Theme;
 import mil.army.moda.pao_dashboard.user.UserProfile;
 
@@ -31,10 +32,12 @@ public class Event {
     private Theme theme;
     @ManyToOne()
     private PostingLocation postingLocation;
+    @ManyToOne
+    ProductType productType;
     public Event() {
     }
 
-    public Event(Long id, String name, String description, EventType event_type, Date start_date, Date end_date, UserProfile lead, EventStatus eventStatus, Theme theme, PostingLocation postingLocation) {
+    public Event(Long id, String name, String description, EventType event_type, Date start_date, Date end_date, UserProfile lead, EventStatus eventStatus, Theme theme, PostingLocation postingLocation, ProductType productType) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -45,6 +48,7 @@ public class Event {
         this.eventStatus = eventStatus;
         this.theme = theme;
         this.postingLocation = postingLocation;
+        this.productType = productType;
     }
 
     public Long getId() {
@@ -125,6 +129,14 @@ public class Event {
 
     public void setPostingLocation(PostingLocation postingLocation) {
         this.postingLocation = postingLocation;
+    }
+
+    public ProductType getProductType() {
+        return productType;
+    }
+
+    public void setProductType(ProductType productType) {
+        this.productType = productType;
     }
 }
 

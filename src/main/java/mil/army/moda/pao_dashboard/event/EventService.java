@@ -7,6 +7,8 @@ import mil.army.moda.pao_dashboard.event_type.EventType;
 import mil.army.moda.pao_dashboard.event_type.EventTypeRepository;
 import mil.army.moda.pao_dashboard.posting_location.PostingLocation;
 import mil.army.moda.pao_dashboard.posting_location.PostingLocationRepository;
+import mil.army.moda.pao_dashboard.product_types.ProductType;
+import mil.army.moda.pao_dashboard.product_types.ProductTypeRepository;
 import mil.army.moda.pao_dashboard.theme.Theme;
 import mil.army.moda.pao_dashboard.theme.ThemeRepository;
 import mil.army.moda.pao_dashboard.user.UserProfile;
@@ -26,16 +28,18 @@ public class EventService {
     private final EventTypeRepository eventTypeRepository;
     private final ThemeRepository themeRepository;
     private final PostingLocationRepository postingLocationRepository;
+    private final ProductTypeRepository productTypeRepository;
 
-    public EventService(EventRepository eventRepository, EventStatusRepository eventStatusRepository, UserRepository userRepository, EventTypeRepository eventTypeRepository, ThemeRepository themeRepository, PostingLocationRepository postingLocationRepository) {
+    public EventService(EventRepository eventRepository, EventStatusRepository eventStatusRepository, UserRepository userRepository, EventTypeRepository eventTypeRepository, ThemeRepository themeRepository, PostingLocationRepository postingLocationRepository, ProductTypeRepository productTypeRepository) {
         this.eventRepository = eventRepository;
         this.eventStatusRepository = eventStatusRepository;
         this.userRepository = userRepository;
         this.eventTypeRepository = eventTypeRepository;
         this.themeRepository = themeRepository;
         this.postingLocationRepository = postingLocationRepository;
+        this.productTypeRepository = productTypeRepository;
     }
-
+//todo need to pull product type
     public List<EventResponseDto> findAll() {
         return eventRepository.findAll().stream()
                 .map(e -> new EventResponseDto(
@@ -55,7 +59,9 @@ public class EventService {
                         e.getTheme().getName(),
                         e.getTheme().getId(),
                         e.getPostingLocation().getName(),
-                        e.getPostingLocation().getId()
+                        e.getPostingLocation().getId(),
+                        e.getProductType().getName(),
+                        e.getProductType().getId()
                 )).toList();
     }
 
@@ -82,7 +88,9 @@ public class EventService {
                         e.getTheme().getName(),
                         e.getTheme().getId(),
                         e.getPostingLocation().getName(),
-                        e.getPostingLocation().getId()
+                        e.getPostingLocation().getId(),
+                        e.getProductType().getName(),
+                        e.getProductType().getId()
                 )).toList();
     }
     public Event create(EventRequest request) {
@@ -109,11 +117,15 @@ public class EventService {
         PostingLocation postingLocation = postingLocationRepository.findById(request.getPostingLocationId())
                 .orElseThrow(() -> new RuntimeException("Invalid posting location"));
 
+        ProductType productType = productTypeRepository.findById(request.getProductTypeId())
+                        .orElseThrow(() -> new RuntimeException("Invalid product type"));
+
         event.setEvent_type(eventType);
         event.setLead(lead);
         event.setEventStatus(status);
         event.setTheme(theme);
         event.setPostingLocation(postingLocation);
+        event.setProductType(productType);
 
         return eventRepository.save(event);
     }
@@ -135,6 +147,8 @@ public class EventService {
                 .orElseThrow(() -> new RuntimeException("Invalid theme"));
         PostingLocation postingLocation = postingLocationRepository.findById(updated.getPostingLocationId())
                 .orElseThrow(() -> new RuntimeException("Invalid posting location"));
+        ProductType productType = productTypeRepository.findById(updated.getProductTypeId())
+                .orElseThrow(() -> new RuntimeException("Invalid product type"));
 
         existing.setName(updated.getName());
         existing.setDescription(updated.getDescription());
@@ -145,6 +159,7 @@ public class EventService {
         existing.setEventStatus(status);
         existing.setTheme(theme);
         existing.setPostingLocation(postingLocation);
+        existing.setProductType(productType);
        Event saved = eventRepository.save(existing);
         // Map the saved entity (with its generated ID) to the response DTO
         return new EventResponseDto(
@@ -164,7 +179,9 @@ public class EventService {
                 saved.getTheme().getName(),
                 saved.getTheme().getId(),
                 saved.getPostingLocation().getName(),
-                saved.getPostingLocation().getId()
+                saved.getPostingLocation().getId(),
+                saved.getProductType().getName(),
+                saved.getProductType().getId()
         );
     }
 

@@ -99,6 +99,7 @@ export default function Dashboard({
             name: draft.name,
             description: draft.description,
             eventTypeId: draft.eventTypeId,
+            productTypeId: draft.productTypeId,
             leadId: draft.leadId,
             eventStatusId: draft.eventStatusId,
             postingLocationId: draft.postingLocationId,
