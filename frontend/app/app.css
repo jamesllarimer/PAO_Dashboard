@@ -27,3 +27,7 @@
   background-position: right 8px center;
   padding-right: 24px;
 }
+
+input[type="date"] {
+  color-scheme: dark;
+}
