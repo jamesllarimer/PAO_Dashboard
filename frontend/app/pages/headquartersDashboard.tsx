@@ -1,6 +1,7 @@
 import type {Route} from "./+types/headquartersDashboard";
 import {useEffect, useState} from "react";
 import ThemeForm from "../components/ThemeForm";
+import {useAlert} from "~/context/AlertContext";
 import type {
     EventRequest,
     EventResponseDto,
@@ -34,6 +35,7 @@ export default function HeadquartersDashboard() {
     const [dateFrom, setDateFrom] = useState<string>("");
     const [dateTo, setDateTo] = useState<string>("");
     const {activeUser, users} = useUserContext();
+    const {showSuccess, showError} = useAlert();
 
     let units = [...new Set(events.map(e => e.unit))]
 
@@ -59,11 +61,8 @@ export default function HeadquartersDashboard() {
             });
             filtered = filtered.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
             setEvents(filtered);
-            for (let event of filtered) {
-                console.log(event);
-            }
         } catch (error) {
-            console.error(error);
+            showError("Failed to load events");
         }
     }
 
@@ -83,8 +82,9 @@ export default function HeadquartersDashboard() {
             if (!response.ok) throw new Error(response.statusText);
 
             setEvents(prev => prev.filter(e => e.id !== id));
+            showSuccess("Event deleted");
         } catch (error) {
-            console.error(error);
+            showError("Failed to delete event");
         }
     }
 
@@ -110,14 +110,10 @@ export default function HeadquartersDashboard() {
             if (!response.ok) throw new Error(response.statusText);
 
             const saved: EventResponseDto = await response.json();
-
-            // Swap the old record out of both state arrays
-            const swap = (list: EventResponseDto[]) =>
-                list.map(e => (e.id === saved.id ? saved : e))
-
-            setEvents(swap);
+            setEvents(list => list.map(e => (e.id === saved.id ? saved : e)));
+            showSuccess("Event saved");
         } catch (error) {
-            console.error(error);
+            showError("Failed to save event");
         }
     }
 

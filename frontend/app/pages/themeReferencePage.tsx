@@ -3,10 +3,12 @@ import type { Theme } from "~/types";
 import ThemeCard from "~/components/ThemeCard";
 import Modal from "~/components/Modal";
 import ThemeForm from "~/components/ThemeForm";
+import {useAlert} from "~/context/AlertContext";
 
 export default function ThemeReferencePage() {
     const [themes, setThemes] = useState<Theme[]>([]);
     const [showModal, setShowModal] = useState<boolean>(false);
+    const {showError} = useAlert();
 
     async function getAllThemes(): Promise<Theme[]> {
         try {
@@ -24,7 +26,7 @@ export default function ThemeReferencePage() {
             console.log(results);
             return results;
         } catch (error: any) {
-            console.log(error);
+            showError("Failed to load themes");
             return [];
         }
     }

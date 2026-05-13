@@ -1,4 +1,5 @@
 import type {ThemeExample} from "~/types";
+import {useAlert} from "~/context/AlertContext";
 
 interface ThemeCardProps {
     id: number;
@@ -8,22 +9,22 @@ interface ThemeCardProps {
 }
 
 export default function ThemeCard({id, name, examples, onDelete}: ThemeCardProps) {
+    const {showSuccess, showError} = useAlert();
 
     const handleDelete = async () => {
-       try{
-           const response = await fetch(`http://localhost:8080/api/v1/theme/${id}`, {
-               method: "DELETE",
-           });
-           if (response.ok) {
-               onDelete(id); // tell the parent to remove it from state
-           } else {
-               //todo create a bootstrap like alert to use for these
-               alert(`Failed to delete theme, make sure it isn't assigned to an existing event`);
-           }
-       } catch (error) {
-           alert(`Failed to delete theme, make sure it isn't assigned to an existing event`);
-           console.error(error);
-       }
+        try {
+            const response = await fetch(`http://localhost:8080/api/v1/theme/${id}`, {
+                method: "DELETE",
+            });
+            if (response.ok) {
+                onDelete(id);
+                showSuccess("Theme deleted");
+            } else {
+                showError("Failed to delete theme — make sure it isn't assigned to an existing event");
+            }
+        } catch (error) {
+            showError("Failed to delete theme — make sure it isn't assigned to an existing event");
+        }
     };
 
     return (

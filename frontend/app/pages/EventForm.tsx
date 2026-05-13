@@ -5,6 +5,7 @@ import {yupResolver} from "@hookform/resolvers/yup/src";
 import {useUserContext} from "~/context/UserProfileContext";
 import {useEffect, useState} from "react";
 import type {EventRequest, EventStatus, EventType, PostingLocation, Theme, ProductType} from "~/types";
+import {useAlert} from "~/context/AlertContext";
 
 const validationSchema = Yup.object({
         name: string().required('Event name is required.'),
@@ -22,6 +23,7 @@ const validationSchema = Yup.object({
 
 export default function EventForm(eventid: number | undefined) {
     const {users} = useUserContext();
+    const {showSuccess, showError} = useAlert();
     const [eventTypes, setEventTypes] = useState<EventType[]>([]);
     const [postingLocations, setPostingLocations] = useState<PostingLocation[]>([]);
     const [eventStatuses, setEventStatuses] = useState<EventStatus[]>([]);
@@ -96,12 +98,13 @@ export default function EventForm(eventid: number | undefined) {
                 }
             })
             if (!response.ok) {
-                alert(response.statusText);
+                showError(`Failed to load themes: ${response.statusText}`);
+                return [];
             }
             return await response.json();
         } catch (error: any) {
-            alert(error);
-            return error;
+            showError("Failed to load themes");
+            return [];
         }
     }
 
@@ -115,12 +118,13 @@ export default function EventForm(eventid: number | undefined) {
                 }
             })
             if (!response.ok) {
-                alert(response.statusText);
+                showError(`Failed to load product types: ${response.statusText}`);
+                return [];
             }
             return await response.json();
         } catch (error: any) {
-            alert(error);
-            return error;
+            showError("Failed to load product types");
+            return [];
         }
     }
 
@@ -138,15 +142,14 @@ export default function EventForm(eventid: number | undefined) {
             if (!response.ok) {
                 throw new Error(response.statusText);
             }
-            let result = await response.json();
-            console.log(result);
+            await response.json();
             setLoading(false);
-            reset()
+            showSuccess("Event created successfully");
+            reset();
 
         } catch (error: any) {
-            console.log(error);
+            showError("Failed to create event");
             setLoading(false);
-            return error;
         }
     }
 

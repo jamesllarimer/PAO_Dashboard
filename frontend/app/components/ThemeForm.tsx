@@ -3,6 +3,7 @@ import { string, array, object } from "yup";
 import { useForm, useFieldArray } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup/src";
 import type { Theme } from "~/types";
+import {useAlert} from "~/context/AlertContext";
 
 interface ThemeFormData {
     name: string;
@@ -25,6 +26,7 @@ const validationSchema = Yup.object({
 });
 
 export default function ThemeForm({ onSuccess, onCancel }: ThemeFormProps) {
+    const {showSuccess, showError} = useAlert();
     const {
         register,
         handleSubmit,
@@ -56,12 +58,13 @@ export default function ThemeForm({ onSuccess, onCancel }: ThemeFormProps) {
         });
 
         if (!response.ok) {
-            console.error("Failed to create theme");
+            showError("Failed to create theme");
             return;
         }
 
         const newTheme: Theme = await response.json();
         reset();
+        showSuccess("Theme created");
         onSuccess(newTheme);
     };
 

@@ -11,6 +11,7 @@ import type {
 import {useEffect, useState} from "react";
 import {useUserContext} from "~/context/UserProfileContext";
 import EventGridRow from "~/components/EventGridRow";
+import {useAlert} from "~/context/AlertContext";
 
 type EditDraft = EventRequest & { id: number };
 
@@ -27,6 +28,7 @@ export default function Dashboard({
 
     const [events, setEvents] = useState<EventResponseDto[]>([]);
     const {activeUser, users} = useUserContext();
+    const {showSuccess, showError} = useAlert();
     const [dateFrom, setDateFrom] = useState<string>("");
     const [dateTo, setDateTo] = useState<string>("");
     const [eventTypes, setEventTypes] = useState<EventType[]>([]);
@@ -37,25 +39,17 @@ export default function Dashboard({
 
     async function getAllEvents() {
         try {
-            let userId = 1
             const response = await fetch(`http://localhost:8080/api/v1/events/userId/${params.userId}`, {
                 method: 'GET',
                 headers: {'Content-Type': 'application/json'},
             });
             if (!response.ok) throw new Error(response.statusText);
             let data: EventResponseDto[] = await response.json();
-            let filtered: EventResponseDto[] = data.filter((event: EventResponseDto) => {
-                if (event?.status !== "Archived") {
-                    return event;
-                }
-            });
+            let filtered: EventResponseDto[] = data.filter((event: EventResponseDto) => event?.status !== "Archived");
             filtered = filtered.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
             setEvents(filtered);
-            for (let event of filtered) {
-                console.log(event);
-            }
         } catch (error) {
-            console.error(error);
+            showError("Failed to load events");
         }
     }
 
@@ -89,8 +83,9 @@ export default function Dashboard({
             if (!response.ok) throw new Error(response.statusText);
 
             setEvents(prev => prev.filter(e => e.id !== id));
+            showSuccess("Event deleted");
         } catch (error) {
-            console.error(error);
+            showError("Failed to delete event");
         }
     }
 
@@ -116,14 +111,10 @@ export default function Dashboard({
             if (!response.ok) throw new Error(response.statusText);
 
             const saved: EventResponseDto = await response.json();
-
-            // Swap the old record out of both state arrays
-            const swap = (list: EventResponseDto[]) =>
-                list.map(e => (e.id === saved.id ? saved : e))
-
-            setEvents(swap);
+            setEvents(list => list.map(e => (e.id === saved.id ? saved : e)));
+            showSuccess("Event saved");
         } catch (error) {
-            console.error(error);
+            showError("Failed to save event");
         }
     }
 

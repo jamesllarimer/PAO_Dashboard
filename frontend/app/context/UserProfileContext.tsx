@@ -1,6 +1,7 @@
 // context/ThemeContext.tsx
 import {createContext, type ReactNode, useContext, useEffect, useState} from 'react';
 import type {User} from "~/types";
+import {useAlert} from '~/context/AlertContext';
 
 interface UserContextType {
     users: User[] | undefined;
@@ -14,6 +15,7 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export function UserProvider({ children }: { children: ReactNode }) {
     const [users, setUsers] = useState<User[]>();
     const [activeUser, setActiveUser] = useState<User | null>(null);
+    const { showError } = useAlert();
 
     async function getAllUsers(): Promise<User[] | any> {
         try {
@@ -28,9 +30,9 @@ export function UserProvider({ children }: { children: ReactNode }) {
                 throw new Error(response.statusText);
             }
             return await response.json();
-        }catch (error: any) {
-            console.log(error);
-            return error;
+        } catch (error: any) {
+            showError("Failed to load user profiles");
+            return [];
         }
 
     }

@@ -13,6 +13,8 @@ import NavBar from "~/components/NavBar";
 import {ThemeProvider} from './context/ThemeContext';
 import {UserProvider} from './context/UserProfileContext'
 import Sidebar from "~/components/SideBar";
+import {AlertProvider} from './context/AlertContext';
+import AlertToast from '~/components/AlertToast';
 
 export const links: Route.LinksFunction = () => [
     {rel: "preconnect", href: "https://fonts.googleapis.com"},
@@ -37,19 +39,22 @@ export function Layout({children}: { children: React.ReactNode }) {
             <Links/>
         </head>
         <body className="bg-army-black text-white m-0 min-h-screen font-sans">
-        <UserProvider>
-            <ThemeProvider>
-                <div className="flex flex-col min-h-screen">
-                    <NavBar/>
-                    <div className="flex flex-1">
-                        <Sidebar/>
-                        {children}
+        <AlertProvider>
+            <UserProvider>
+                <ThemeProvider>
+                    <div className="flex flex-col min-h-screen">
+                        <NavBar/>
+                        <div className="flex flex-1">
+                            <Sidebar/>
+                            {children}
+                        </div>
                     </div>
-                </div>
-                <ScrollRestoration/>
-                <Scripts/>
-            </ThemeProvider>
-        </UserProvider>
+                    <AlertToast/>
+                    <ScrollRestoration/>
+                    <Scripts/>
+                </ThemeProvider>
+            </UserProvider>
+        </AlertProvider>
         </body>
         </html>
     );
